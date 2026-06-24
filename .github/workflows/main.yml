@@ -1,4 +1,4 @@
-```yaml
+yaml
 name: Check IPTV
 
 on:
@@ -20,4 +20,4 @@ python-version: '3.8'
 run: |
 pip install m3u-checker # Установите нужный пакет для проверки
 m3u-checker CAPMAT.m3u # Здесь будет ваша команда для проверки
-```
+
