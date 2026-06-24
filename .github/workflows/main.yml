@@ -12,12 +12,14 @@ runs-on: ubuntu-latest
 steps:
 - name: Checkout repository
 uses: actions/checkout@v3
-- name: Install Python
+name: Set up Python
 uses: actions/setup-python@v2
 with:
 python-version: '3.8'
+name: Install M3U Checker
+run: |
+pip install m3u-checker # Устанавливаем пакет для проверки
+
 - name: Run M3U Checker
 run: |
-pip install m3u-checker # Установите нужный пакет для проверки
-m3u-checker CAPMAT.m3u # Здесь будет ваша команда для проверки
-
+m3u-checker CAPMAT.m3u # Запускаем проверку
