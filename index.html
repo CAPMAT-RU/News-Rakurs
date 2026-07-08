@@ -1,789 +1,371 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="yandex-verification" content="1bcc32a86990c202" />
-    <title>РАКУРС NEWS — Все новости, политика, регионы, армия и спорт</title>
-    <link rel="icon" type="image/png" href="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>РАКУРС NEWS — Все новости, политика, регионы, армия и спорт</title>
+<link rel="icon" type="image/png" href="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" />
+<meta name="description" content="РАКУРС NEWS: актуальные новости России и мира. Политика, регионы, геополитика, армия, коррупция, криминал, спорт и мемы. Читайте первыми." />
+<meta name="keywords" content="новости, политика, Россия, армия, геополитика, криминал, РАКУРС NEWS" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="РАКУРС NEWS — Все новости" />
+<meta property="og:description" content="Актуальные новости России и мира: политика, регионы, армия, спорт и другое. Читайте на РАКУРС NEWS." />
+<meta property="og:url" content="https://ваш-домен.ru/" />
+<meta property="og:site_name" content="РАКУРС NEWS" />
+<meta property="og:image" content="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" />
+<meta property="og:locale" content="ru_RU" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="РАКУРС NEWS — Все новости" />
+<meta name="twitter:description" content="Актуальные новости России и мира: политика, регионы, армия, спорт и другое. Читайте на РАКУРС NEWS." />
+<meta name="twitter:image" content="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --accent-color: #e09f7d;
+    --card-bg: #222222;
+    --menu-bg: #2c2c2c;
+    --footer-height: 80px;
+    --border-color: #333333;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+  body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; }
+  h1, h2, h3, .logo, .nav-link, .card-title, .site-logo-img, #siteSearch, .category-tag, .author, .publish-date, .publish-time, .hint-text, .copyright, .social-icon, .play-button, .volume-button, .load-more-btn {
+    font-family: 'Montserrat', sans-serif;
+  }
+  p, .meta-info span, .author, .publish-date, .publish-time, .hint-text, .copyright {
+    font-family: 'Merriweather', serif; line-height: 1.6;
+  }
+  header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background-color: rgba(26, 26, 26, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .site-logo-img { height: 35px; width: auto; }
+  .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--accent-color); }
+  #siteSearch { background: rgba(44, 44, 44, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px 15px; border-radius: 20px; outline: none; font-size: 14px; transition: border-color 0.3s; width: 180px; }
+  #siteSearch:focus { border-color: var(--accent-color); }
+  .burger { cursor: pointer; width: 30px; height: 21px; position: relative; }
+  .burger span { position: absolute; width: 100%; height: 3px; background-color: var(--text-color); border-radius: 2px; transition: all 0.3s ease; }
+  .burger span:nth-child(1) { top: 0; }
+  .burger span:nth-child(2) { top: 9px; }
+  .burger span:nth-child(3) { top: 18px; }
+  .burger.active span:nth-child(1) { transform: rotate(45deg); top: 9px; }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: rotate(-45deg); top: 9px; }
+  .mobile-menu { position: fixed; top: 0; left: -70%; width: 70%; height: 100vh; background-color: var(--menu-bg); padding: 40px 20px; transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); z-index: 1100; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+  .mobile-menu.open { left: 0; }
+  .nav-link { color: var(--text-color); text-decoration: none; font-size: 18px; padding: 12px 0; border-bottom: 1px solid var(--accent-color); cursor: pointer; user-select: none; transition: color 0.2s; outline: none; }
+  .nav-link:hover { color: var(--accent-color); }
+  main { margin-top: 60px; padding: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; width: 100%; flex: 1; }
+  h2.section-title { margin-bottom: 20px; border-left: 5px solid var(--accent-color); padding-left: 15px; font-size: 28px; }
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 50px; }
+  .news-card { background-color: var(--card-bg); border-radius: 4px; border: 1px solid var(--border-color); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; display: block; overflow: hidden; cursor: pointer; }
+  .news-card:hover { transform: scale(1.02); box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); opacity: 0.9; }
+  .news-card:focus { box-shadow: 0 0 0 2px var(--accent-color), 0 0 0 5px rgba(255, 71, 87, 0.5); }
+  .card-media { width: 100%; height: 200px; object-fit: cover; }
+  .category-tag { color: var(--accent-color); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
+  .card-title { font-size: 20px; margin-bottom: 15px; line-height: 1.3; }
+  .author { font-weight: bold; color: #aaa; }
+  .publish-date { color: #666; margin-right: 10px; }
+  .publish-time { color: #666; }
+  .card-meta { margin-top: auto; font-size: 14px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .hint-text { color: var(--accent-color); font-size: 14px; margin-top: 10px; line-height: 1.4; text-align: center; }
+  footer { height: var(--footer-height); padding: 20px; background-color: rgba(26, 26, 26, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: auto; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; position: relative; bottom: 0; left: 0; width: 100%; z-index: 999; }
+  .copyright { font-size: 16px; color: #888; margin-top: 15px; }
+  .social-icons-container { display: flex; justify-content: center; gap: 25px; margin-top: 30px; }
+  .social-icon { display: inline-flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; background-color: #333; border: 1px solid #555; transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden; cursor: pointer; }
+  .social-icon img { width: 24px; height: 24px; object-fit: contain; }
+  .social-icon:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); }
+  .load-more-btn { display: block; padding: 10px 20px; margin: 30px auto; background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color); text-decoration: none; font-weight: bold; border-radius: 25px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1rem; cursor: pointer; outline: none; }
+  .load-more-btn:hover, .load-more-btn:focus { background: var(--accent-color); color: white; transform: scale(1.05); box-shadow: 0 0 15px rgba(224, 159, 125, 0.6); }
 
-    <meta name="description" content="РАКУРС NEWS: актуальные новости России и мира. Политика, регионы, геополитика, армия, коррупция, криминал, спорт и мемы. Читайте первыми.">
-    <meta name="keywords" content="новости, политика, Россия, армия, геополитика, криминал, РАКУРС NEWS">
-
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="РАКУРС NEWS — Все новости">
-    <meta property="og:description" content="Актуальные новости России и мира: политика, регионы, армия, спорт и другое. Читайте на РАКУРС NEWS.">
-    <meta property="og:url" content="https://ваш-домен.ru/">
-    <meta property="og:site_name" content="РАКУРС NEWS">
-    <meta property="og:image" content="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png">
-    <meta property="og:locale" content="ru_RU">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="РАКУРС NEWS — Все новости">
-    <meta name="twitter:description" content="Актуальные новости России и мира: политика, регионы, армия, спорт и другое. Читайте на РАКУРС NEWS.">
-    <meta name="twitter:image" content="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --accent-color: #e09f7d;
-            --card-bg: #222222;
-            --menu-bg: #2c2c2c;
-            --footer-height: 80px;
-            --border-color: #333333;
-        }
-        
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color); 
-            color: var(--text-color);
-            min-height: 100vh; 
-            display: flex;
-            flex-direction: column; 
-        }
-
-        h1, h2, h3, .logo, .nav-link, .card-title, .site-logo-img, #siteSearch, .category-tag, .author, .publish-date, .publish-time, .hint-text, .copyright, .social-icon, .play-button, .volume-button, .load-more-btn {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        p, .meta-info span, .author, .publish-date, .publish-time, .hint-text, .copyright {
-            font-family: 'Merriweather', serif;
-            line-height: 1.6;
-        }
-
-        header { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%;
-            height: 60px; 
-            background-color: rgba(26, 26, 26, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 0 15px; 
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .header-right { display: flex; align-items: center; gap: 20px; }
-
-        .site-logo-img { height: 35px; width: auto; }
-        .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--accent-color); }
-
-        #siteSearch {
-            background: rgba(44, 44, 44, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 6px 15px;
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            width: 180px; 
-        }
-        #siteSearch:focus { border-color: var(--accent-color); }
-
-        .burger { cursor: pointer; width: 30px; height: 21px; position: relative; }
-        .burger span { position: absolute; width: 100%; height: 3px; background-color: var(--text-color); border-radius: 2px; transition: all 0.3s ease; }
-        .burger span:nth-child(1) { top: 0; }
-        .burger span:nth-child(2) { top: 9px; }
-        .burger span:nth-child(3) { top: 18px; }
-        .burger.active span:nth-child(1) { transform: rotate(45deg); top: 9px; }
-        .burger.active span:nth-child(2) { opacity: 0; }
-        .burger.active span:nth-child(3) { transform: rotate(-45deg); top: 9px; }
-
-        .mobile-menu { 
-            position: fixed; 
-            top: 0; 
-            left: -70%;
-            width: 70%; 
-            height: 100vh; 
-            background-color: var(--menu-bg); 
-            padding: 40px 20px; 
-            transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            z-index: 1100;
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px;
-            overflow-y: auto;
-        }
-        .mobile-menu.open { left: 0; }
-
-        .nav-link { 
-            color: var(--text-color); 
-            text-decoration: none;
-            font-size: 18px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--accent-color); 
-            cursor: pointer;
-            user-select: none; 
-            transition: color 0.2s; 
-            outline: none;
-        }
-        .nav-link:hover { color: var(--accent-color); }
-
-        main { 
-            margin-top: 60px; 
-            padding: 40px;
-            max-width: 1200px; 
-            margin-left: auto;
-            margin-right: auto; 
-            width: 100%; 
-            flex: 1;
-        }
-
-        h2.section-title { 
-            margin-bottom: 20px; 
-            border-left: 5px solid var(--accent-color); 
-            padding-left: 15px; 
-            font-size: 28px;
-        }
-
-        .news-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 30px; 
-            margin-bottom: 50px; 
-        }
-
-        .news-card {
-            background-color: var(--card-bg); 
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-            display: block; 
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .news-card:hover { 
-            transform: scale(1.02);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            opacity: 0.9;
-        }
-        .news-card:focus {
-            box-shadow: 0 0 0 2px var(--accent-color),
-                        0 0 0 5px rgba(255, 71, 87, 0.5);
-        }
-
-        .card-media { 
-            width: 100%; 
-            height: 200px;
-            object-fit: cover; 
-        }
-        
-        .category-tag { 
-            color: var(--accent-color); 
-            font-size: 12px; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            margin-bottom: 8px; 
-            display: inline-block;
-        }
-        
-        .card-title { font-size: 20px; margin-bottom: 15px; line-height: 1.3; }
-        
-        .author { font-weight: bold; color: #aaa; } 
-        .publish-date { color: #666; margin-right: 10px; }
-        .publish-time { color: #666; }
-        
-        .card-meta { 
-            margin-top: auto; 
-            font-size: 14px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-top: 10px;
-        }
-
-        .hint-text { 
-            color: var(--accent-color); 
-            font-size: 14px; 
-            margin-top: 10px; 
-            line-height: 1.4; 
-            text-align: center;
-        }
-
-        footer { 
-            height: var(--footer-height);
-            padding: 20px; 
-            background-color: rgba(26, 26, 26, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: auto; 
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            position: relative; 
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-        }
-        .copyright { font-size: 16px; color: #888; margin-top: 15px; }
-
-        .social-icons-container {
-            display: flex; 
-            justify-content: center; 
-            gap: 25px; 
-            margin-top: 30px;
-        }
-
-        .social-icon {
-            display: inline-flex; 
-            justify-content: center;
-            align-items: center;
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            background-color: #333; 
-            border: 1px solid #555; 
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden; 
-            cursor: pointer;
-        }
-
-        .social-icon img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain; 
-        }
-
-        .social-icon:hover {
-            transform: translateY(-3px) scale(1.1); 
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); 
-        }
-
-        .video-container {
-            position: relative; 
-            width: 100%;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden; 
-            background-color: #000; 
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-height: 500px;
-        }
-
-        .video-container video {
-            display: block; 
-            width: 100%;
-            height: auto; 
-            max-height: 500px; 
-            object-fit: cover; 
-            background-color: #000; 
-        }
-
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70px; 
-            height: 70px;
-            background-color: var(--card-bg); 
-            border-radius: 50%;
-            display: flex; 
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 2px solid var(--accent-color); 
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.4); 
-            z-index: 10; 
-            display: none;
-        }
-
-        .play-button:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.6);
-        }
-
-        .play-icon {
-            width: 0; 
-            height: 0; 
-            border-top: 15px solid transparent; 
-            border-bottom: 15px solid transparent; 
-            border-left: 25px solid var(--accent-color); 
-            margin-left: 5px; 
-        }
-        
-        .volume-button {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background-color: rgba(30, 30, 30, 0.7); 
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 71, 87, 0.5); 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            z-index: 10;
-            display: none;
-        }
-
-        .volume-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
-        }
-
-        .volume-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            background: url('https://raw.githubusercontent.com/CAPMAT-RU/bez-shutok/main/images/IMG_
-20260704_133508.png') no-repeat center center;
-            background-size: contain;
-        }
-        .volume-icon::before, 
-        .volume-icon::after {
-            display: none;
-        }
-
-        .news-card:focus, .news-card:active,
-        .nav-link:focus, .nav-link:active,
-        a:focus, a:active {
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu { width: 70%; }
-            main { padding: 20px; max-width: 100%; }
-            .news-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-            .card-media { height: 180px; }
-        }
-
-        @media (max-width: 480px) {
-            .news-grid { grid-template-columns: 1fr; }
-            .card-media { height: 200px; }
-            .header-left .logo { font-size: 20px; }
-            .header-left .site-logo-img { height: 30px; }
-            #siteSearch { width: 140px; }
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .card-title a {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .card-title a:hover {
-            color: var(--accent-color);
-        }
-
-        :focus {
-            outline: none;
-        }
-        a:focus,
-        button:focus,
-        input:focus,
-        select:focus,
-        textarea:focus,
-        .nav-link:focus,
-        .news-card:focus {
-            box-shadow: 0 0 0 2px var(--accent-color),
-                        0 0 0 5px rgba(224, 159, 125, 0.5);
-        }
-
-        .load-more-btn {
-            display: block;
-            padding: 10px 20px;
-            margin: 30px auto;
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 25px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 1rem;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .load-more-btn:hover,
-        .load-more-btn:focus {
-            background: var(--accent-color);
-            color: white;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(224, 159, 125, 0.6);
-        }
-    </style>
+  /* Адаптивность */
+  @media(max-width: 768px) {
+    .mobile-menu { width: 70%; }
+    main { padding: 20px; max-width: 100%; }
+    .news-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .card-media { height: 180px; }
+  }
+  @media(max-width: 480px) {
+    .news-grid { grid-template-columns: 1fr; }
+    .card-media { height: 200px; }
+    .header-left .logo { font-size: 20px; }
+    .header-left .site-logo-img { height: 30px; }
+    #siteSearch { width: 140px; }
+  }
+</style>
 </head>
 <body>
-    <header>
-        <div class="header-left">
-            <img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" class="site-logo-img" alt="Логотип РАКУРС NEWS">
-            <div class="logo">РАКУРС NEWS</div>
+<header>
+  <div class="header-left">
+    <img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" class="site-logo-img" alt="Логотип РАКУРС NEWS" />
+    <div class="logo">РАКУРС NEWS</div>
+  </div>
+  <div class="header-right">
+    <input type="text" id="siteSearch" placeholder="Поиск на сайте..." aria-label="Поиск новостей" />
+    <div class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+<nav class="mobile-menu" id="mobileMenu" aria-label="Мобильное меню">
+  <a href="#" class="nav-link" onclick="filterNews('Все'); closeMobileMenu();" aria-current="page">Все новости</a>
+  <a href="#" class="nav-link" onclick="filterNews('Политика'); closeMobileMenu();">Политика</a>
+  <a href="#" class="nav-link" onclick="filterNews('Регионы'); closeMobileMenu();">Регионы</a>
+  <a href="#" class="nav-link" onclick="filterNews('Геополитика'); closeMobileMenu();">Геополитика</a>
+  <a href="#" class="nav-link" onclick="filterNews('Армия'); closeMobileMenu();">Армия</a>
+  <a href="#" class="nav-link" onclick="filterNews('Коррупция'); closeMobileMenu();">Коррупция</a>
+  <a href="#" class="nav-link" onclick="filterNews('Криминал'); closeMobileMenu();">Криминал</a>
+  <a href="#" class="nav-link" onclick="filterNews('Спорт'); closeMobileMenu();">Спорт</a>
+  <a href="#" class="nav-link" onclick="filterNews('Мемы'); closeMobileMenu();">Мемы</a>
+</nav>
+<main>
+<h2 class="section-title" id="current-title">Все новости</h2>
+<div id="loader" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+<div class="spinner"></div>
+<p style="margin-left: 15px; color: #888;">Загрузка новостей...</p>
+</div>
+<div class="news-grid" id="grid-all" style="display: none;" role="list"></div>
+<div id="no-results" style="text-align:center; padding:40px; color:#888; display:none;" role="alert">В этом разделе пока нет новостей.</div>
+<button id="load-more-btn" class="load-more-btn" style="display: none;" aria-label="Загрузить еще новости">Еще новости</button>
+<div style="text-align: center; margin: 30px 0;">
+</div>
+</main>
+<footer>
+<div class="social-icons-container" aria-label="Социальные сети">
+<a href="https://vk.ru/rakurs_russia" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="ВКонтакте">
+<img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_232415.png" alt="ВКонтакте" width="24" height="24" />
+</a>
+<a href="https://t.me/Rakurs_Russia" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Telegram">
+<img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_231852.png" alt="Telegram" width="24" height="24" />
+</a>
+</div>
+<p class="copyright">2026 © РАКУРС NEWS</p>
+</footer>
+<script>
+  let allNewsGlobal = [];
+  let displayedNewsCount = 0;
+  const NEWS_PER_PAGE = 10;
+  let currentCategory = 'Все';
+
+  async function loadNews() {
+    const loader = document.getElementById('loader');
+    const grid = document.getElementById('grid-all');
+    loader.style.display = 'flex';
+    grid.style.display = 'none';
+    try {
+      const response = await fetch('news.json');
+      if (!response.ok) throw new Error('Ошибка сети');
+      allNewsGlobal = await response.json();
+      loader.style.display = 'none';
+      grid.style.display = 'grid'; 
+      filterNews(currentCategory);
+    } catch (error) {
+      console.error('Ошибка:', error);
+      loader.style.display = 'none';
+      grid.style.display = 'block';
+      document.getElementById('grid-all').innerHTML = '<p style="color:#ff4757; text-align:center;">Не удалось загрузить новости. Проверьте консоль.</p>';
+    }
+  }
+  function createCardHTML(item) {
+    const link = item.url; 
+    let mediaHtml = ''; 
+    if (item.videoUrl) {
+      mediaHtml = `
+        <div class="video-container">
+          <video class="video-element" preload="auto">
+            <source src="${item.videoUrl}" type="video/mp4" />
+            Ваш браузер не поддерживает тег video.
+          </video>
+          <div class="play-button">
+            <div class="play-icon"></div>
+          </div>
+          <div class="volume-button">
+            <div class="volume-icon"></div>
+          </div>
         </div>
-        <div class="header-right">
-            <input type="text" id="siteSearch" placeholder="Поиск по новостям..." aria-label="Поиск новостей">
-            <div class="burger" id="burger" aria-label="Меню">
-                <span></span><span></span><span></span>
+      `;
+    } else {
+      mediaHtml = `<img src="${item.image}" alt="${item.title}" class="card-media" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200/333/fff?text=No+Image'" />`;
+    }
+    return `
+      <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle" role="article">
+        <a href="${link}" style="text-decoration: none; color: inherit; display: block; cursor: pointer;">
+          ${mediaHtml}
+          <div style="padding: 20px;">
+            <span class="category-tag" itemprop="articleSection">${item.category}</span>
+            <h3 class="card-title" itemprop="headline">${item.title}</h3>
+            <div class="card-meta" itemprop="datePublished" content="${item.date}">
+              <span>${item.date} ${item.time ? 'в ' + item.time : ''}</span>
             </div>
-        </div>
-    </header>
-
-    <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильное меню">
-        <a href="#" class="nav-link" onclick="filterNews('Все'); closeMobileMenu();" aria-current="page">Все новости</a>
-        <a href="#" class="nav-link" onclick="filterNews('Политика'); closeMobileMenu();">Политика</a>
-        <a href="#" class="nav-link" onclick="filterNews('Регионы'); closeMobileMenu();">Регионы</a>
-        <a href="#" class="nav-link" onclick="filterNews('Геополитика'); closeMobileMenu();">Геополитика</a>
-        <a href="#" class="nav-link" onclick="filterNews('Армия'); closeMobileMenu();">Армия</a>
-        <a href="#" class="nav-link" onclick="filterNews('Коррупция'); closeMobileMenu();">Коррупция</a>
-        <a href="#" class="nav-link" onclick="filterNews('Криминал'); closeMobileMenu();">Криминал</a>
-        <a href="#" class="nav-link" onclick="filterNews('Спорт'); closeMobileMenu();">Спорт</a>
-        <a href="#" class="nav-link" onclick="filterNews('Мемы'); closeMobileMenu();">Мемы</a>
-    </nav>
-
-    <main>
-        <h2 class="section-title" id="current-title">Все новости</h2>
-
-        <div id="loader" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
-            <div class="spinner"></div>
-            <p style="margin-left: 15px; color: #888;">Загрузка новостей...</p>
-        </div>
-
-        <div class="news-grid" id="grid-all" style="display: none;" role="list"></div>
-    
-        <div id="no-results" style="text-align:center; padding:40px; color:#888; display:none;" role="alert">
-            В этом разделе пока нет новостей.
-        </div>
-
-        <button id="load-more-btn" class="load-more-btn" style="display: none;" aria-label="Загрузить еще новости">Еще новости</button>
-    </main>
-
-    <footer>
-        <div class="social-icons-container" aria-label="Социальные сети">
-            <a href="https://vk.ru/rakurs_russia" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="ВКонтакте">
-                <img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_232415.png" alt="ВКонтакте" width="24" height="24">
-            </a>
-            <a href="https://t.me/Rakurs_Russia" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Telegram">
-                <img src="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_231852.png" alt="Telegram" width="24" height="24">
-            </a>
-        </div>
-        <p class="copyright">2026 © РАКУРС NEWS</p>
-    </footer>
-
-    <script>
-        let allNewsGlobal = [];
-        let displayedNewsCount = 0;
-        const NEWS_PER_PAGE = 10;
-        let currentCategory = 'Все';
-
-        async function loadNews() {
-            const loader = document.getElementById('loader');
-            const grid = document.getElementById('grid-all');
-            
-            loader.style.display = 'flex';
-            grid.style.display = 'none';
-
-            try {
-                const response = await fetch('news.json');
-                if (!response.ok) throw new Error('Ошибка сети');
-                
-                allNewsGlobal = await response.json();
-                
-                loader.style.display = 'none';
-                grid.style.display = 'grid'; 
-                
-                filterNews(currentCategory);
-            } catch (error) {
-                console.error('Ошибка:', error);
-                loader.style.display = 'none';
-                grid.style.display = 'block';
-                document.getElementById('grid-all').innerHTML = 
-                    '<p style="color:#ff4757; text-align:center;">Не удалось загрузить новости. Проверьте консоль.</p>';
-            }
+            <div class="hint-text">Читать далее →</div>
+          </div>
+        </a>
+      </article>
+    `;
+  }
+  function setupVideoPlayer(container) {
+    const videoContainer = container.querySelector('.video-container');
+    if (!videoContainer) return;
+    const videoElement = videoContainer.querySelector('.video-element');
+    const playButton = videoContainer.querySelector('.play-button');
+    const volumeButton = videoContainer.querySelector('.volume-button');
+    videoElement.style.display = 'none';
+    playButton.style.display = 'none';
+    volumeButton.style.display = 'none';
+    const showPlayerControls = () => {
+      videoElement.style.display = 'block';
+      playButton.style.display = 'flex';
+      volumeButton.style.display = 'flex';
+    };
+    videoElement.addEventListener('loadedmetadata', () => {
+      showPlayerControls();
+    });
+    if (videoElement.readyState >= 2 && videoElement.paused) { 
+      showPlayerControls();
+    } else if (videoElement.readyState < 2) {
+      playButton.style.display = 'flex';
+      volumeButton.style.display = 'flex';
+      videoContainer.style.cursor = 'pointer'; 
+    }
+    playButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (videoElement.paused) {
+        videoElement.play();
+        playButton.style.display = 'none';
+      } else {
+        videoElement.pause();
+        playButton.style.display = 'flex';
+      }
+    });
+    volumeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      videoElement.muted = !videoElement.muted;
+    });
+    videoElement.addEventListener('ended', () => {
+      playButton.style.display = 'flex';
+      videoElement.style.display = 'block'; 
+      volumeButton.style.display = 'flex';
+    });
+    videoContainer.addEventListener('click', () => {
+      if (videoElement.paused) {
+        videoElement.play();
+        playButton.style.display = 'none';
+      } else {
+        videoElement.pause();
+        playButton.style.display = 'flex';
+      }
+    });
+  }
+  function displayNews(newsItems) {
+    const grid = document.getElementById('grid-all');
+    const noResults = document.getElementById('no-results');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    grid.innerHTML = '';
+    displayedNewsCount = 0;
+    if (newsItems.length === 0) {
+      noResults.style.display = 'block';
+      loadMoreBtn.style.display = 'none';
+      return;
+    } else {
+      noResults.style.display = 'none';
+    }
+    const initialDisplayCount = Math.min(NEWS_PER_PAGE, newsItems.length);
+    for (let i = 0; i < initialDisplayCount; i++) {
+      const cardHTML = createCardHTML(newsItems[i]);
+      grid.insertAdjacentHTML('beforeend', cardHTML);
+    }
+    displayedNewsCount = initialDisplayCount;
+    const addedCards = grid.querySelectorAll('.news-card:nth-last-child(-n + ' + initialDisplayCount + ')');
+    addedCards.forEach(card => { setupVideoPlayer(card); });
+    if (displayedNewsCount < newsItems.length) {
+      document.getElementById('load-more-btn').style.display = 'block';
+    } else {
+      document.getElementById('load-more-btn').style.display = 'none';
+    }
+  }
+  function loadMoreNews() {
+    const grid = document.getElementById('grid-all');
+    const startIndex = displayedNewsCount;
+    const endIndex = Math.min(startIndex + NEWS_PER_PAGE, allNewsGlobal.length);
+    const newsToDisplay = allNewsGlobal.slice(startIndex, endIndex);
+    newsToDisplay.forEach(item => {
+      const cardHTML = createCardHTML(item);
+      grid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+    displayedNewsCount = endIndex;
+    const addedCards = grid.querySelectorAll('.news-card:nth-last-child(-n + ' + newsToDisplay.length + ')');
+    addedCards.forEach(card => { setupVideoPlayer(card); });
+    if (displayedNewsCount < allNewsGlobal.length) {
+      document.getElementById('load-more-btn').style.display = 'block';
+    } else {
+      document.getElementById('load-more-btn').style.display = 'none';
+    }
+  }
+  window.filterNews = function(category) {
+    currentCategory = category;
+    const titleEl = document.getElementById('current-title');
+    titleEl.textContent = category === 'Все' ? 'Все новости' : `${category}`;
+    let filtered;
+    if (category === 'Все') {
+      filtered = allNewsGlobal;
+    } else {
+      filtered = allNewsGlobal.filter(item => item.category === category);
+    }
+    displayNews(filtered);
+  };
+  document.getElementById('siteSearch').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    const grid = document.getElementById('grid-all');
+    const noResults = document.getElementById('no-results');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const titleEl = document.getElementById('current-title');
+    if (query.length < 2) {
+      filterNews(currentCategory);
+      titleEl.textContent = currentCategory === 'Все' ? 'Все новости' : currentCategory;
+      return;
+    }
+    const cards = grid.querySelectorAll('.news-card');
+    let found = false;
+    cards.forEach(card => {
+      const titleElement = card.querySelector('.card-title');
+      if (titleElement) {
+        const title = titleElement.innerText.toLowerCase();
+        if (title.includes(query)) {
+          card.style.display = 'block';
+          found = true;
+        } else {
+          card.style.display = 'none';
         }
-
-        function createCardHTML(item) {
-            const link = item.url; 
-            let mediaHtml = ''; 
-
-            if (item.videoUrl) {
-                mediaHtml = `
-                    <div class="video-container">
-                        <video class="video-element" preload="auto"> 
-                            <source src="${item.videoUrl}" type="video/mp4">
-                            Ваш браузер не поддерживает тег video.
-                        </video>
-                        <div class="play-button">
-                            <div class="play-icon"></div>
-                        </div>
-                        <div class="volume-button">
-                            <div class="volume-icon"></div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                mediaHtml = `
-                    <img src="${item.image}" alt="${item.title}" class="card-media" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200/333/fff?text=No+Image'">
-                `;
-            }
-
-            return `
-                <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle" role="article">
-                    <a href="${link}" style="text-decoration: none; color: inherit; display: block; cursor: pointer;">
-                        ${mediaHtml} 
-                        
-                        <div style="padding: 20px;">
-                            <span class="category-tag" itemprop="articleSection">${item.category}</span>
-                            <h3 class="card-title" itemprop="headline">
-                                ${item.title}
-                            </h3>
-                            <div class="card-meta" itemprop="datePublished" content="${item.date}">                               
-                                <span>${item.date} ${item.time ? 'в ' + item.time : ''}</span>
-                            </div>
-                            <div class="hint-text">
-                                Читать далее →
-                            </div>
-                        </div>
-                    </a>
-                </article>
-            `;
-        }
-
-        function setupVideoPlayer(container) {
-            const videoContainer = container.querySelector('.video-container');
-            if (!videoContainer) return;
-
-            const videoElement = videoContainer.querySelector('.video-element');
-            const playButton = videoContainer.querySelector('.play-button');
-            const volumeButton = videoContainer.querySelector('.volume-button');
-
-            videoElement.style.display = 'none';
-            playButton.style.display = 'none';
-            volumeButton.style.display = 'none';
-
-            const showPlayerControls = () => {
-                videoElement.style.display = 'block';
-                playButton.style.display = 'flex';
-                volumeButton.style.display = 'flex';
-            };
-
-            videoElement.addEventListener('loadedmetadata', () => {
-                showPlayerControls();
-            });
-             
-            if (videoElement.readyState >= 2 && videoElement.paused) { 
-                showPlayerControls();
-            } else if (videoElement.readyState < 2) {
-                playButton.style.display = 'flex';
-                volumeButton.style.display = 'flex';
-                videoContainer.style.cursor = 'pointer'; 
-            }
-
-            playButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (videoElement.paused) {
-                    videoElement.play();
-                    playButton.style.display = 'none';
-                } else {
-                    videoElement.pause();
-                    playButton.style.display = 'flex';
-                }
-            });
-
-            volumeButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                videoElement.muted = !videoElement.muted;
-            });
-
-            videoElement.addEventListener('ended', () => {
-                playButton.style.display = 'flex';
-                videoElement.style.display = 'block'; 
-                volumeButton.style.display = 'flex';
-            });
-            
-            videoContainer.addEventListener('click', () => {
-                if (videoElement.paused) {
-                    videoElement.play();
-                    playButton.style.display = 'none';
-                } else {
-                    videoElement.pause();
-                    playButton.style.display = 'flex';
-                }
-            });
-        }
-
-        function displayNews(newsItems) {
-            const grid = document.getElementById('grid-all');
-            const noResults = document.getElementById('no-results');
-            const loadMoreBtn = document.getElementById('load-more-btn');
-
-            grid.innerHTML = '';
-            displayedNewsCount = 0;
-
-            if (newsItems.length === 0) {
-                noResults.style.display = 'block';
-                loadMoreBtn.style.display = 'none';
-                return;
-            } else {
-                noResults.style.display = 'none';
-            }
-
-            const initialDisplayCount = Math.min(NEWS_PER_PAGE, newsItems.length);
-            for (let i = 0; i < initialDisplayCount; i++) {
-                const cardHTML = createCardHTML(newsItems[i]);
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            }
-            displayedNewsCount = initialDisplayCount;
-
-            const addedCards = grid.querySelectorAll('.news-card:nth-last-child(-n + ' + initialDisplayCount + ')');
-            addedCards.forEach(card => {
-                setupVideoPlayer(card);
-            });
-
-            if (displayedNewsCount < newsItems.length) {
-                loadMoreBtn.style.display = 'block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-
-        function loadMoreNews() {
-            const grid = document.getElementById('grid-all');
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            
-            const startIndex = displayedNewsCount;
-            const endIndex = Math.min(startIndex + NEWS_PER_PAGE, allNewsGlobal.length);
-            const newsToDisplay = allNewsGlobal.slice(startIndex, endIndex);
-
-            newsToDisplay.forEach(item => {
-                const cardHTML = createCardHTML(item);
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            });
-
-            displayedNewsCount = endIndex;
-
-            const addedCards = grid.querySelectorAll('.news-card:nth-last-child(-n + ' + newsToDisplay.length + ')');
-            addedCards.forEach(card => {
-                setupVideoPlayer(card);
-            });
-
-            if (displayedNewsCount < allNewsGlobal.length) {
-                loadMoreBtn.style.display = 'block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-
-        window.filterNews = function(category) {
-            currentCategory = category;
-            const titleEl = document.getElementById('current-title');
-            
-            titleEl.textContent = category === 'Все' ? 'Все новости' : `${category}`;
-
-            let filtered;
-            if (category === 'Все') {
-                filtered = allNewsGlobal;
-            } else {
-                filtered = allNewsGlobal.filter(item => item.category === category);
-            }
-
-            displayNews(filtered);
-        };
-
-        const searchInput = document.getElementById('siteSearch');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            const grid = document.getElementById('grid-all');
-            const noResults = document.getElementById('no-results');
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            const titleEl = document.getElementById('current-title');
-
-            if (query.length < 2) {
-                filterNews(currentCategory);
-                titleEl.textContent = currentCategory === 'Все' ? 'Все новости' : currentCategory;
-                return;
-            }
-
-            const cards = grid.querySelectorAll('.news-card');
-            let found = false;
-
-            cards.forEach(card => {
-                const titleElement = card.querySelector('.card-title');
-                if (titleElement) {
-                    const title = titleElement.innerText.toLowerCase();
-                                        if (title.includes(query)) {
-                        card.style.display = 'block';
-                        found = true;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                }
-            });
-
-            if (!found) {
-                noResults.style.display = 'block';
-                loadMoreBtn.style.display = 'none';
-            } else {
-                noResults.style.display = 'none';
-                const visibleCards = grid.querySelectorAll('.news-card:not([style*="display: none"])');
-                if (visibleCards.length < allNewsGlobal.length) {
-                    loadMoreBtn.style.display = 'block';
-                } else {
-                    loadMoreBtn.style.display = 'none';
-                }
-            }
-        });
-
-        const burger = document.getElementById('burger');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('open');
-            burger.classList.remove('active');
-        }
-
-        burger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            burger.classList.toggle('active');
-        });
-
-        window.closeMobileMenu = closeMobileMenu;
-
-        document.addEventListener('DOMContentLoaded', loadNews);
-    </script>
+      }
+    });
+    if (!found) {
+      noResults.style.display = 'block';
+      loadMoreBtn.style.display = 'none';
+    } else {
+      noResults.style.display = 'none';
+      const visibleCards = grid.querySelectorAll('.news-card:not([style*="display: none"])');
+      if (visibleCards.length < allNewsGlobal.length) {
+        document.getElementById('load-more-btn').style.display = 'block';
+      } else {
+        document.getElementById('load-more-btn').style.display = 'none';
+      }
+    }
+  });
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    burger.classList.remove('active');
+  }
+  burger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    burger.classList.toggle('active');
+  });
+  document.addEventListener('DOMContentLoaded', loadNews);
+  document.getElementById('load-more-btn').addEventListener('click', loadMoreNews);
+</script>
 </body>
 </html>
