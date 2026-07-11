@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>РАКУРС NEWS — Все новости</title>
+  <meta name="yandex-verification" content="e7c83448470c71f8" />
   <link rel="icon" type="image/png" href="https://raw.github.com/CAPMAT-RU/rakurs-news-ru/main/images/IMG_20260706_221334.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -425,44 +426,71 @@
   </footer>
 
   <script>
-    let allNewsGlobal = [];
-    let displayedNewsCount = 0;
-    const NEWS_PER_PAGE = 10;
-    let currentCategory = 'Все';
+  let allNewsGlobal = [];
+  let displayedNewsCount = 0;
+  const NEWS_PER_PAGE = 10;
+  let currentCategory = 'Все';
 
-    async function loadNews() {
-      const loader = document.getElementById('loader');
-      const grid = document.getElementById('grid-all');
-      loader.style.display = 'flex';
-      grid.style.display = 'none';
-      try {
-        const response = await fetch('news.json');
-        if (!response.ok) throw new Error('Ошибка сети');
-        allNewsGlobal = await response.json();
-        loader.style.display = 'none';
-        grid.style.display = 'grid'; 
-        filterNews(currentCategory);
-      } catch (error) {
-        console.error('Ошибка:', error);
-        loader.style.display = 'none';
-        grid.style.display = 'block';
-        document.getElementById('grid-all').innerHTML = '<p style="color:#ff4757; text-align:center;">Не удалось загрузить новости. Проверьте консоль.</p>';
-      }
-    }
+  async function loadNews() {
+    const loader = document.getElementById('loader');
+    const grid = document.getElementById('grid-all');
+    
+    // Показываем лоадер
+    loader.style.display = 'flex';
+    grid.style.display = 'none';
 
-    function createCardHTML(item, index) {
-      // Ссылка ведет на news.html с параметром id. 
-      // Если в JSON нет поля url, используем заглушку, но лучше заполнить url в JSON.
-      const linkUrl = item.url || `news.html?id=${index}`;
+    try {
+      // ВАЖНО: Проверь, чтобы имя файла точно совпадало с регистром букв в репозитории!
+      const response = await fetch('news.json'); 
       
-      return `
-        <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle" role="article">
-          <a href="${linkUrl}" style="text-decoration: none; color: inherit; display: block;">
-            <div style="padding: 20px;">
-              <span class="category-tag" itemprop="articleSection">${item.category}</span>
-              <h3 class="card-title" itemprop="headline">${item.title}</h3>
-              <div class="card-meta" itemprop="datePublished" content="${item.date}">
-                              <span>${item.date} ${item.time ? 'в ' + item.time : ''}</span>
+      if (!response.ok) {
+        throw new Error(`Ошибка сети: ${response.status} ${response.statusText}`);
+      }
+      
+      allNewsGlobal = await response.json();
+      
+      console.log('Новости загружены:', allNewsGlobal.length); // Смотри в консоль браузера!
+      
+      loader.style.display = 'none';
+      grid.style.display = 'grid'; 
+      filterNews(currentCategory);
+      
+      // Теперь безопасно вешаем событие на кнопку, так как данные уже есть
+      const btn = document.getElementById('load-more-btn');
+      if (btn) {
+        btn.addEventListener('click', loadMoreNews, { once: false });
+      }
+
+    } catch (error) {
+      console.error('Ошибка загрузки:', error);
+      loader.style.display = 'none';
+      grid.style.display = 'block';
+      // Красивая ошибка вместо красного текста
+      grid.innerHTML = `
+        <div style="color:#ff4757; text-align:center; padding: 40px; border: 1px solid #333; background: #111;">
+          <p>Не удалось загрузить новости.</p>
+          <p><b>Проверь консоль (F12) и:</b></p>
+          <ul style="text-align:left; margin-top:10px;">
+            <li>Лежит ли файл news.json в корне репозитория?</li>
+            <li>Совпадает ли регистр букв (news.json vs News.json)?</li>
+            <li>Валиден ли JSON (нет ли запятых в конце)?</li>
+          </ul>
+        </div>`;
+    }
+  }
+
+  function createCardHTML(item, index) {
+    const linkUrl = item.url || `#`; // Если нет ссылки, ставим заглушку
+    
+    return `
+      <article class="news-card">
+        <a href="${linkUrl}" style="text-decoration: none; color: inherit; display: block; height: 100%;">
+          <div style="padding: 20px; height: 100%; display: flex; flex-direction: column;">
+            <span class="category-tag">${item.category || 'Разное'}</span>
+            <h3 class="card-title" style="margin: 10px 0;">${item.title}</h3>
+            <div class="card-meta" style="margin-top: auto; color: #888; font-size: 14px;">
+              <span>${item.date}</span>
+              ${item.time ? '<span style="margin-left:10px;">в ' + item.time + '</span>' : ''}
             </div>
           </div>
         </a>
@@ -474,12 +502,13 @@
     const grid = document.getElementById('grid-all');
     const noResults = document.getElementById('no-results');
     const loadMoreBtn = document.getElementById('load-more-btn');
+    
     grid.innerHTML = '';
     displayedNewsCount = 0;
 
-    if (newsItems.length === 0) {
+    if (!newsItems || newsItems.length === 0) {
       noResults.style.display = 'block';
-      loadMoreBtn.style.display = 'none';
+      if(loadMoreBtn) loadMoreBtn.style.display = 'none';
       return;
     } else {
       noResults.style.display = 'none';
@@ -492,14 +521,14 @@
     }
     displayedNewsCount = initialDisplayCount;
 
-    if (displayedNewsCount < newsItems.length) {
-      document.getElementById('load-more-btn').style.display = 'block';
-    } else {
-      document.getElementById('load-more-btn').style.display = 'none';
+    if (loadMoreBtn) {
+      loadMoreBtn.style.display = (displayedNewsCount < newsItems.length) ? 'block' : 'none';
     }
   }
 
   function loadMoreNews() {
+    if (allNewsGlobal.length === 0) return; // Защита, если данные не загрузились
+
     const grid = document.getElementById('grid-all');
     const startIndex = displayedNewsCount;
     const endIndex = Math.min(startIndex + NEWS_PER_PAGE, allNewsGlobal.length);
@@ -512,10 +541,9 @@
 
     displayedNewsCount = endIndex;
 
-    if (displayedNewsCount < allNewsGlobal.length) {
-      document.getElementById('load-more-btn').style.display = 'block';
-    } else {
-      document.getElementById('load-more-btn').style.display = 'none';
+    const btn = document.getElementById('load-more-btn');
+    if (btn) {
+      btn.style.display = (displayedNewsCount < allNewsGlobal.length) ? 'block' : 'none';
     }
   }
 
@@ -533,20 +561,18 @@
     displayNews(filtered);
   };
 
+  // Поиск (упрощенный, работает только если карточки уже нарисованы)
   document.getElementById('siteSearch').addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
-    const grid = document.getElementById('grid-all');
-    const noResults = document.getElementById('no-results');
-    const loadMoreBtn = document.getElementById('load-more-btn');
-    const titleEl = document.getElementById('current-title');
-
+    const cards = document.querySelectorAll('.news-card');
+    
     if (query.length < 2) {
-      filterNews(currentCategory);
-      titleEl.textContent = currentCategory === 'Все' ? 'Все новости' : currentCategory;
-      return;
+       // Если поиск пустой, сбрасываем видимость всех карточек
+       cards.forEach(c => c.style.display = 'block');
+       document.getElementById('no-results').style.display = 'none';
+       return;
     }
 
-    const cards = grid.querySelectorAll('.news-card');
     let found = false;
     cards.forEach(card => {
       const titleElement = card.querySelector('.card-title');
@@ -561,18 +587,7 @@
       }
     });
 
-    if (!found) {
-      noResults.style.display = 'block';
-      loadMoreBtn.style.display = 'none';
-    } else {
-      noResults.style.display = 'none';
-      const visibleCards = grid.querySelectorAll('.news-card:not([style*="display: none"])');
-      if (visibleCards.length < allNewsGlobal.length) {
-        document.getElementById('load-more-btn').style.display = 'block';
-      } else {
-        document.getElementById('load-more-btn').style.display = 'none';
-      }
-    }
+    document.getElementById('no-results').style.display = found ? 'none' : 'block';
   });
 
   const burger = document.getElementById('burger');
@@ -583,16 +598,16 @@
     burger.classList.remove('active');
   }
 
-  burger.addEventListener('click', () => {
-    mobileMenu.classList.toggle('open');
-    burger.classList.toggle('active');
-  });
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      burger.classList.toggle('active');
+    });
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     loadNews();
   });
-
-  document.getElementById('load-more-btn').addEventListener('click', loadMoreNews);
 </script>
 </body>
 </html>
