@@ -15,7 +15,7 @@
     --accent-color: #e09f7d;
     --card-bg: #222222;
     --border-color: #333333;
-    }
+}
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
 body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; padding-top: 60px; }
 header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background-color: rgba(26, 26, 26, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
@@ -33,13 +33,17 @@ footer { margin-top: auto; padding: 20px; text-align: center; color: #888; font-
 .content-text { font-family: 'Merriweather', serif; font-size: 1.1rem; line-height: 1.7; white-space: pre-wrap; }
 .video-container { position: relative; width:100%; margin-bottom: 20px; border-radius: 8px; overflow: hidden; background: #000; }
 .video-container video { width: 100%; display: block; }
-.play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; background: var(--card-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; border:2px solid var(--accent-color); cursor: pointer; }
-.play-icon { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; border-left: 25px solid var(--accent-color); margin-left: 5px; }
+.play-button, .volume-button, .fullscreen-button { position: absolute; bottom: 10px; background: var(--card-bg); border-radius: 5px; border: 1px solid var(--accent-color); cursor: pointer; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; }
+.play-button { left: 10px; }
+.volume-button { left: 50px; }
+.fullscreen-button { right: 10px; }
+.play-icon, .volume-icon, .fullscreen-icon { width: 20px; height: 20px; }
+.volume-slider { position: absolute; bottom: 50px; left: 50px; width: 100px; display: none; }
 </style>
 </head>
 <body>
 <header>
-<div class="logo-container">
+    <div class="logo-container">
         <img src="https://raw.github.com/rakurs-news/rakurs-news.github.io/main/images/IMG_20260706_221334.png" alt="Логотип">
         <h1>РАКУРС</h1>
     </div>
@@ -58,7 +62,7 @@ async function loadSingleArticle() {
     const container = document.getElementById('article-container');
 
     try {
-    const response = await fetch('news.json');
+        const response = await fetch('news.json');
         const data = await response.json();
         const news = data.find(n => n.id == newsId);
 
@@ -69,6 +73,9 @@ async function loadSingleArticle() {
                 ? `<div class="video-container" id="vid-wrapper">
                      <video src="${news.videoUrl}" playsinline></video>
                      <div class="play-button" id="play-btn"><div class="play-icon"></div></div>
+                     <div class="volume-button" id="volume-btn"><img class="volume-icon" src="https://github.com/rakurs-news/rakurs-news.github.io/raw/main/images/IMG_20260712_040343.webp" alt="Громкость"></div>
+                     <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="1">
+                     <div class="fullscreen-button" id="fullscreen-btn"><img class="fullscreen-icon" src="https://github.com/rakurs-news/rakurs-news.github.io/raw/main/images/IMG_20260712_041022.webp" alt="Во весь экран"></div>
                    </div>`
                 : `<img src="${news.image}" alt="${news.title}">`;
 
@@ -77,27 +84,49 @@ async function loadSingleArticle() {
                 <div class="meta-info"><span class="category-meta">Рубрика: ${news.category}</span></div>
                 <div class="content-text">${news.content}</div>
                 <a href="index.html" class="back-btn">← На Главную</a>`;
-                const wrapper = document.getElementById('vid-wrapper');
-            const video = wrapper ? wrapper.querySelector('video') : null;
-            const btn = wrapper ? document.getElementById('play-btn') : null;
 
-            if (wrapper && video && btn) {
-                // При клике по видео или кнопке — переключение воспроизведения  
+            const wrapper = document.getElementById('vid-wrapper');
+            const video = wrapper ? wrapper.querySelector('video') : null;
+            const playBtn = wrapper ? document.getElementById('play-btn') : null;
+            const volumeBtn = wrapper ? document.getElementById('volume-btn') : null;
+            const volumeSlider = wrapper ? document.getElementById('volume-slider') : null;
+            const fullscreenBtn = wrapper ? document.getElementById('fullscreen-btn') : null;
+
+            if (wrapper && video && playBtn && volumeBtn && volumeSlider && fullscreenBtn) {
                 const toggleVideo = () => {
                     if (video.paused) {
                         video.play();
-                        btn.style.display = 'none';
+                        playBtn.style.display = 'none';
                     } else {
                         video.pause();
-                        btn.style.display = 'flex';
+                        playBtn.style.display = 'flex';
                     }
                 };
+
+                playBtn.addEventListener('click', toggleVideo);
+                
+                volumeBtn.addEventListener('click', () => {
+                    volumeSlider.style.display = volumeSlider.style.display === 'block' ? 'none' : 'block';
+                });
+
+                volumeSlider.addEventListener('input', () => {
+                    video.volume = volumeSlider.value;
+                });
+
+                fullscreenBtn.addEventListener('click', () => {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    } else {
+                        wrapper.requestFullscreen();
+                    }
+                });
+
                 wrapper.addEventListener('click', toggleVideo);
             }
         } else {
             container.innerHTML = `<h2>Новость не найдена</h2>`;
         }
-        } catch (err) {
+    } catch (err) {
         console.error(err);
         container.innerHTML = `<h2>Ошибка загрузки</h2>`;
     }
