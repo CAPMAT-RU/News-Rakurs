@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
 
-<!-- Ваши стили без изменений -->
 <style>
 :root {
     --bg-color: #1a1a1a;
@@ -31,15 +30,21 @@ footer { margin-top: auto; padding: 20px; text-align: center; color: #888; font-
 .back-btn:hover { background: var(--accent-color); color: var(--bg-color); transform: scale(1.05); }
 #article-container { max-width: 800px; margin:40px auto; padding: 30px; background: var(--card-bg); border-radius: 8px; border:1px solid var(--border-color); }
 #article-container img { width: 100%; height: auto; max-height: 500px; object-fit: cover; border-radius:4px; margin-bottom: 25px; }
-/* --- ИЗМЕНЕНИЕ ДЛЯ ЗАГОЛОВКА НОВОСТИ --- */
+
+/* --- ИЗМЕНЕНИЯ ДЛЯ ЛОГИЧНОГО ПЕРЕНОСА ЗАГОЛОВКА --- */
 #article-container h1 {
-    font-size: 1,6rem;
+    font-size: 1.8rem; /* Уменьшен размер для лучшего размещения */
     margin-bottom: 20px;
-    line-height: 1.2; /* Добавляем для лучшего контроля высоты */
-    word-wrap: break-word; /* Разрешаем перенос длинных слов */
-    overflow-wrap: break-word; /* Альтернативное свойство */
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto; /* Включаем автоматический перенос слов */
+    -webkit-hyphens: auto; /* Для WebKit браузеров */
+    -moz-hyphens: auto;    /* Для Firefox */
+    -ms-hyphens: auto;     /* Для Internet Explorer */
 }
-/* --- КОНЕЦ ИЗМЕНЕНИЯ --- */
+/* --- КОНЕЦ ИЗМЕНЕНИЙ --- */
+
 .meta-info { color: #aaa; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
 .category-meta { color: var(--accent-color); font-weight: 700; }
 .content-text { font-family: 'Merriweather', serif; font-size: 1.1rem; line-height: 1.7; white-space: pre-wrap; }
