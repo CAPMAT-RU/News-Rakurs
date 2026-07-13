@@ -8,16 +8,14 @@
 <meta name="yandex-verification" content="8e3a5a0a7520b3b8" />
 <meta name="description" content="Читайте последние новости на портале РАКУРС" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <style>
 :root {
     --bg-color: #1a1a1a;
     --text-color: #f0f0f0;
     --accent-color: #e09f7d;
-    --card-bg: #222222;
-    --border-color: #333333;
+    --card-bg: #222222;    --border-color: #333333;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
 body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; padding-top: 60px; }
@@ -31,36 +29,17 @@ footer { margin-top: auto; padding: 20px; text-align: center; color: #888; font-
 #article-container { max-width: 800px; margin:40px auto; padding: 30px; background: var(--card-bg); border-radius: 8px; border:1px solid var(--border-color); }
 #article-container img { width: 100%; height: auto; max-height: 500px; object-fit: cover; border-radius:4px; margin-bottom: 25px; }
 
-/* --- ИЗМЕНЕНИЯ ДЛЯ ЛОГИЧНОГО ПЕРЕНОСА ЗАГОЛОВКА --- */
 #article-container h1 {
-    font-size: 1.6rem; /* Уменьшен размер еще больше */
+    font-size: 1.6rem;
     margin-bottom: 20px;
-    line-height: 1.3; /* Увеличен межстрочный интервал */
-    word-wrap: break-word; /* Обеспечиваем перенос длинных слов */
-    overflow-wrap: break-word; /* Альтернативное свойство */
-    /* hyphens: auto; */ /* Временно убрано для более предсказуемого поведения */
-    /* -webkit-hyphens: auto; */
-    /* -moz-hyphens: auto; */
-    /* -ms-hyphens: auto; */
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
-/* --- КОНЕЦ ИЗМЕНЕНИЙ --- */
-
 .meta-info { color: #aaa; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
 .category-meta { color: var(--accent-color); font-weight: 700; }
-.content-text { 
-    font-family: 'Merriweather', serif; 
-    font-size: 1.1rem; 
-    line-height: 1.7; 
-    /* hyphens: auto;  -- Убрано, так как оно не всегда работает идеально */
-    /* -webkit-hyphens: auto; */
-    /* -moz-hyphens: auto; */
-    /* -ms-hyphens: auto; */
-    text-align: left; /* Изменено с justify на left для избежания больших пробелов */
-}
-.content-text p {
-    margin-top: 1.2em; 
-    margin-bottom: 1.2em; 
-}
+.content-text { font-family: 'Merriweather', serif; font-size: 1.1rem; line-height: 1.7; text-align: left; }
+.content-text p { margin-top: 1.2em; margin-bottom: 1.2em; }
 .video-container { position: relative; width:100%; margin-bottom: 20px; border-radius: 8px; overflow: hidden; background: #000; cursor: pointer; }
 .video-container video { width: 100%; display: block; }
 .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; background: var(--card-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; border:2px solid var(--accent-color); }
@@ -75,8 +54,7 @@ footer { margin-top: auto; padding: 20px; text-align: center; color: #888; font-
     </div>
 </header>
 <main>
-    <div id="article-container">
-        <p style="text-align: center; color: #666;">Загрузка статьи...</p>
+    <div id="article-container">        <p style="text-align: center; color: #666;">Загрузка статьи...</p>
     </div>
 </main>
 <footer><p>©2026 РАКУРС</p></footer>
@@ -95,28 +73,26 @@ async function loadSingleArticle() {
         if (news) {
             document.title = `${news.title} | РАКУРС`;
 
-            let mediaHtml = news.videoUrl
-                ? `<div class="video-container" id="vid-wrapper">
-                     <video src="${news.videoUrl}" playsinline></video>
-                     <div class="play-button" id="play-btn"><div class="play-icon"></div></div>
-                   </div>`
-                : `<img src="${news.image}" alt="${news.title}">`;
+            // Логика отображения медиа: если ссылки нет, переменная остается пустой
+            let mediaHtml = "";            if (news.videoUrl) {
+                mediaHtml = `<div class="video-container" id="vid-wrapper">
+                               <video src="${news.videoUrl}" playsinline></video>
+                               <div class="play-button" id="play-btn"><div class="play-icon"></div></div>
+                             </div>`;
+            } else if (news.image && news.image.trim() !== "") {
+                mediaHtml = `<img src="${news.image}" alt="${news.title}">`;
+            }
 
             container.innerHTML = `${mediaHtml}
                 <h1>${news.title}</h1>
                 <div class="meta-info"><span class="category-meta">Рубрика: ${news.category}</span></div>
                 <div class="content-text">${news.content}</div>
-                <a href="index.html" class="back-btn">← На Главную</a>`;
-
-            const wrapper = document.getElementById('vid-wrapper');
-            const video = wrapper ? wrapper.querySelector('video') : null;
-            const btn = wrapper ? document.getElementById('play-btn') : null;
+                <a href="index.html" class="back-btn">← На Главную</a>`;            const wrapper = document.getElementById('vid-wrapper');
+            const video = wrapper ? wrapper.querySelector('video') : null;            const btn = wrapper ? document.getElementById('play-btn') : null;
 
             if (wrapper && video && btn) {
-                // При клике по видео или кнопке — переключение воспроизведения
                 const toggleVideo = () => {
-                    if (video.paused) {
-                        video.play();
+                    if (video.paused) {video.play();
                         btn.style.display = 'none';
                     } else {
                         video.pause();
@@ -133,7 +109,6 @@ async function loadSingleArticle() {
         container.innerHTML = `<h2>Ошибка загрузки</h2>`;
     }
 }
-loadSingleArticle();
-</script>
+loadSingleArticle();</script>
 </body>
 </html>
