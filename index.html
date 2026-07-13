@@ -394,18 +394,18 @@
     const category = item.category || 'Без категории';
     const title = item.title || 'Без названия';
     const date = item.date || '';
-    const time = item.time ?`в ${item.time}` : '';
+    // МЕНЯЕМ: вместо onclick делаем обычную ссылку <a>
     return `
-      <article class="news-card" onclick="window.location.href='news.html?id=${item.id}'">
+      <a href="news.html?id=${item.id}" class="news-card" style="text-decoration: none; color: inherit;">
         <div style="padding:20px; height: 100%; display: flex; flex-direction: column;">
           <span class="category-tag">${category}</span>
-          <h3 class="card-title" style="margin: 10px 0;">${title}</h3>
+          <h3 class="card-title" style="margin: 10px0;">${title}</h3>
           <div class="card-meta" style="margin-top: auto; color: var(--accent-color); font-size: 14px;">
-            <span>${date}</span><span style="margin-left:10px;">${time}</span>
-          </div>
-        </div></article>
+            <span>${date}</span>          </div>
+        </div>
+      </a>
     `;
-  }
+}
   
   function displayNews(newsItems) {
     const grid = document.getElementById('grid-all');
