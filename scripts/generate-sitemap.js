@@ -1,10 +1,30 @@
-fs = require('fs');
+const fs = require('fs');
+const path = require('path'); // <-- Сначала подключаем, потом используем!
+
 console.log('--- START GENERATING SITEMAP ---');
 console.log('Current working directory:', process.cwd());
-console.log('Trying to read file at:', path.join(process.cwd(), '../news.json'));
-const path = require('path');
 
-const news = require('../news.json'); // путь к твоему файлу с новостями
+// Формируем абсолютный путь к файлу news.json
+// Мы берем текущую папку скрипта (__dirname) и поднимаемся на уровень вверх
+const newsFilePath = path.join(__dirname, '../news.json');
+console.log('Trying to read file at:', newsFilePath);
+
+let news;
+
+try {
+  // Пытаемся прочитать файл
+  const rawData = fs.readFileSync(newsFilePath, 'utf8');
+  
+  // Пытаемся распарсить JSON
+  news = JSON.parse(rawData);
+  
+  console.log(`Success! Loaded ${news.length} news items.`);
+} catch (err) {
+  // Если что-то пошло не так (файла нет или JSON битый) — пишем громко и выходим с ошибкой
+  console.error('CRITICAL ERROR reading news.json:', err.message);
+  process.exit(1); // Это сделает сборку КРАСНОЙ, чтобы ты точно увидел проблему
+}
+
 const baseUrl = 'https://rakurs-news.github.io';
 
 let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -16,18 +36,20 @@ let xml = `<?xml version="1.0" encoding="UTF-8"?>
   </url>`;
 
 news.forEach(article => {
-  // 1. Берём ID из JSON
+  if (!article.id) {
+    console.warn('Warning: Skipping article without ID:', article);
+    return;
+  }
+
   const id = article.id;
 
-  // 2. Автоматически заменяем длинное тире и другие спецсимволы на дефис
-  // Это решает проблему с ошибкой валидации
-  let slug = id.replace(/–/g, '-').replace(/[^a-z0-9-]/gi, '-');
+  // Замена длинного тире и спецсимволов на дефис
+  let slug = id
+    .replace(/–/g, '-')
+    .replace(/[^a-z0-9-]/gi, '-')
+    .toLowerCase(); // Добавил lowercase для чистоты URL
 
-  // 3. Формируем URL. Если хочешь оставить ?id=..., оставь эту строку:
   const loc = `${baseUrl}/news.html?id=${slug}`;
-
-  // (Опционально) Если хочешь ЧПУ-ссылки, используй эту строку вместо предыдущей:
-  // const loc = `${baseUrl}/news/${slug}/`;
 
   xml += `
   <url>
@@ -39,6 +61,13 @@ news.forEach(article => {
 
 xml += `\n</urlset>`;
 
-// 4. Пишем готовый файл в корень сайта (для GitHub Pages)
-fs.writeFileSync(path.join(__dirname, '../sitemap.xml'), xml);
-console.log('Sitemap generated successfully!');
+// Путь для сохранения sitemap.xml (в корень репозитория)
+const sitemapPath = path.join(__dirname, '../sitemap.xml');
+
+try {
+  fs.writeFileSync(sitemapPath, xml);
+  console.log(`Sitemap generated successfully at: ${sitemapPath}`);
+} catch (err) {
+  console.error('CRITICAL ERROR writing sitemap.xml:', err.message);
+  process.exit(1);
+}
