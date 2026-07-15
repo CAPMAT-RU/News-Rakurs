@@ -76,28 +76,53 @@
         .result-title { color: var(--accent); font-weight: bold; font-size: 16px; text-decoration: none; }
         .result-meta { color: #888; font-size: 12px; margin-top: 4px; }
 
-        .pagination-block {
+        .load-more-btn {
+            display: block;
             margin: 40px auto;
-            text-align: center;
-        }
-        .pagination-link {
-            display: inline-block;
-            padding: 12px 24px;
+            padding: 15px 30px;
             background: transparent;
             border: 1px solid var(--accent);
             color: var(--accent);
             font-weight: bold;
             text-transform: uppercase;
-            text-decoration: none;
+            cursor: pointer;
             border-radius: 4px;
             transition: all 0.3s;
         }
-        .pagination-link:hover { background: var(--accent); color: #000; }
+        .load-more-btn:hover { background: var(--accent); color: #000; }
+        .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .spinner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <!-- Спиннер можно убрать, если он не нужен без JS -->
-    <div id="loadingSpinner" class="spinner-container" style="display:none;">
+
+    <div id="loadingSpinner" class="spinner-container">
         <div class="spinner"></div>
     </div>
 
@@ -108,128 +133,187 @@
         </div>
 
         <div class="search-container">
-            <!-- Поиск без JS не будет работать, но поле можно оставить для вида -->
-            <input type="text" id="searchInput" class="search-input" placeholder="Поиск новости..." disabled>
+            <input type="text" id="searchInput" class="search-input" placeholder="Поиск новости...">
         </div>
     </header>
 
     <div class="container">
         <div class="categories-grid">
-            <a href="index.html" class="category-btn active">Все новости</a>
-            <!-- Категории теперь просто декоративные, без фильтрации -->
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Государство</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Политика</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Геополитика</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Регионы</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Коррупция</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Спорт</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Стиль</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Шоу-бизнес</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Наука</span>
-            <span class="category-btn" style="cursor:default; opacity:0.6;">Культура</span>
+            <a href="#" class="category-btn active" data-category="all">Все новости</a>
+            <a href="#" class="category-btn" data-category="Государство">Государство</a>
+            <a href="#" class="category-btn" data-category="Политика">Политика</a>
+            <a href="#" class="category-btn" data-category="Геополитика">Геополитика</a>
+            <a href="#" class="category-btn" data-category="Регионы">Регионы</a>
+            <a href="#" class="category-btn" data-category="Коррупция">Коррупция</a>
+            <a href="#" class="category-btn" data-category="Спорт">Спорт</a>
+            <a href="#" class="category-btn" data-category="Стиль">Стиль</a>
+            <a href="#" class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</a>
+            <a href="#" class="category-btn" data-category="Наука">Наука</a>
+            <a href="#" class="category-btn" data-category="Культура">Культура</a>
         </div>
 
         <h1 style="margin-bottom: 20px;">Последние новости</h1>
         
-        <div id="error-msg" style="display:none;">Ошибка загрузки новостей</div>
-        <div id="news-container" class="news-grid">
-
-            <!-- Новость 1 -->
-            <a href="n01.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-28">15.07.2026 • Политика</span>
-                <h3 itemprop="headline">Чиновничья чехарда и бюджетные потери.</h3>
-                <p class="preview" itemprop="description">Классический пример российской кадровой политики, где профессиональная непригодность и сомнительные финансовые маневры являются лишь досадной помехой для головокружительной карьеры.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 2 -->
-            <a href="n02.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-27">15.07.2026 • Наука </span>
-                <h3 itemprop="headline">Роботы-хирурги против здравого смысла.</h3>
-                <p class="preview" itemprop="description">Очередной триумф дилетантства свершился в Калифорнийском университете: группа энтузиастов решила заменить высокоточные медицинские системы дешевыми игрушками Unitree G1, доверив им полостные операции на свиньях.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 3 -->
-            <a href="n03.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-26">15.07.2026 • Регионы</span>
-                <h3 itemprop="headline">Почему россияне разучились мечтать?</h3>
-                <p class="preview" itemprop="description">Очередной социологический срез от ВЦИОМ лишь подтвердил печальный диагноз...</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 4 -->
-            <a href="n04.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-25">14.07.2026 • Политика</span>
-                <h3 itemprop="headline">Почему пенсионный возраст неизбежно вырастет?</h3>
-                <p class="preview" itemprop="description">Очередная порция наивных иллюзий о стабильности пенсионного возраста разбивается о суровую арифметику демографической ямы, где коэффициент замещения превратился в жалкое подобие экономики, а не в систему социального обеспечения.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 5 -->
-            <a href="n05.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-24">14.07.2026 • Геополитика</span>
-                <h3 itemprop="headline">Почему Иран умнее наших стратегов?</h3>
-                <p class="preview" itemprop="description">Пока отечественные кабинетные стратеги продолжают упражняться в изящной словесности и бесконечных дискуссиях о высоком, Иран наконец-то продемонстрировал признаки наличия рудиментарного мышления, официально признав Starlink Маска легитимной военной целью.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 6 -->
-            <a href="n06.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-23">14.07.2026 • Регионы</span>
-                <h3 itemprop="headline">Росстат рисует утопию для граждан.</h3>
-                <p class="preview" itemprop="description">Очередной сеанс статистической магии от Росстата и примкнувших к ним «экспертов» вновь доказывает, что при должной сноровке цифры способны существовать в отрыве от реальности, превращая жалкие остатки покупательной способности в триумф экономического благополучия.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 7 -->
-            <a href="n07.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-22">14.07.2026 • Геополитика</span>
-                <h3 itemprop="headline">Почему латвийские власти боятся игрушек?</h3>
-                <p class="preview" itemprop="description">Очевидно, что интеллектуальная мощь латвийского правительства достигла апогея: теперь главной экзистенциальной угрозой для суверенитета республики признаны плюшевые медведи и детские книжки из России и Белоруссии.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 8 -->
-            <a href="n08.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-21">14.07.2026 • Геополитика</span>
-                <h3 itemprop="headline">Борьба с ветряными мельницами в эфире.</h3>
-                <p class="preview" itemprop="description">Европейский вещательный союз решил, что главная проблема мирового спорта — это не допинг и не судейский произвол, а неудачные ракурсы телевизионных камер, которые, по их мнению, кого-то там сексуализируют.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 9 -->
-            <a href="n09.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-20">14.07.2026 • Политика</span>
-                <h3 itemprop="headline">Очередная имитация заботы ФАС.</h3>
-                <p class="preview" itemprop="description">ФАС разродилась очередным «упреждающим ударом», который на деле выглядит как попытка договориться с акулами капитализма по-хорошему, наивно полагая, что торговые сети вдруг вспомнят о совести накануне 1 сентября.</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
-            <!-- Новость 10 -->
-            <a href="n10.html" class="card" itemscope itemtype="https://schema.org/NewsArticle">
-                <span class="meta" itemprop="datePublished" content="2024-10-19">14.07.2026 • Политика</span>
-                <h3 itemprop="headline">Программу переселения для мигрантов пора закрыть.</h3>
-                <p class="preview" itemprop="description">Слушайте, у меня уже глаз дергается от этих новостей про «добровольных переселенцев».</p>
-                <meta itemprop="author" content="Дмитрий Мусиенко">
-                <meta itemprop="publisher" content="Дмитрий Мусиенко">
-            </a>
-
+        <div id="search-results">
+            <h3 style="color: var(--accent); margin-top: 0; margin-bottom: 15px;">Результаты поиска:</h3>
+            <div id="results-list"></div>
         </div>
 
-        <!-- Пагинация: ссылка на следующую страницу -->
-        <div class="pagination-block">
-            <a href="page2.html" class="pagination-link">Следующие новости →</a>
-        </div>
+        <div id="error-msg">Ошибка загрузки новостей</div>
+        <div id="news-container" class="news-grid"></div>
+        
+        <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreNews()">Ещё новости</button>
     </div>
+
+    <script>
+        let allNews = [];
+        let displayedCount = 0;
+        const batchSize = 6;
+        let currentCategory = 'all';
+
+        function hideSpinner() {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.opacity = '0';
+            setTimeout(() => {
+                spinner.style.display = 'none';
+            }, 300);
+        }
+
+        async function loadNews() {
+            const container = document.getElementById('news-container');
+            const errorMsg = document.getElementById('error-msg');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+            try {
+                const response = await fetch('news.json');
+                if (!response.ok) throw new Error('Статус ' + response.status);
+                allNews = await response.json();
+
+                allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                displayedCount = 0;
+                renderNews();
+                
+                if (allNews.length <= batchSize) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'block';
+                    loadMoreBtn.disabled = false;
+                }
+
+                hideSpinner();
+
+            } catch (err) {
+                console.error(err);
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = 'Ошибка: ' + err.message;
+                hideSpinner();
+            }
+        }
+
+        function renderNews() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+
+            let filteredNews = allNews;
+            if (currentCategory !== 'all') {
+                filteredNews = allNews.filter(item => item.category === currentCategory);
+            }
+
+            const toDisplay = filteredNews.slice(displayedCount, displayedCount + batchSize);
+
+            toDisplay.forEach(item => {
+                const link = `news.html?id=${item.id}`;
+                const card = `
+                    <a href="${link}" class="card" itemscope itemtype="https://schema.org/NewsArticle" aria-label="${item.title}">
+                        <span class="meta" itemprop="datePublished" content="${item.date}">${item.date} • ${item.category}</span>
+                        <h3 itemprop="headline">${item.title}</h3>
+                        <p class="preview" itemprop="description">${item.content.substring(0, 150)}...</p>
+                        <meta itemprop="author" content="Ракурс NEWS">
+                        <meta itemprop="publisher" content="Ракурс NEWS">
+                    </a>
+                `;
+                container.innerHTML += card;
+            });
+
+            displayedCount += toDisplay.length;
+
+            const btn = document.getElementById('loadMoreBtn');
+            if (displayedCount >= filteredNews.length) {
+                btn.style.display = 'none';
+            } else {
+                btn.disabled = false;
+            }
+        }
+
+        function loadMoreNews() {
+            const btn = document.getElementById('loadMoreBtn');
+            btn.disabled = true;
+            setTimeout(() => {
+                renderNews();
+            }, 300);
+        }
+
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                
+                const category = btn.getAttribute('data-category');
+                
+                currentCategory = category;
+                btn.classList.add('active');
+                
+                displayedCount = 0;
+                renderNews();
+            });
+        });
+
+        function performSearch(query) {
+            const resultsList = document.getElementById('results-list');
+            const searchResults = document.getElementById('search-results');
+            resultsList.innerHTML = '';
+
+            if (query.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const found = allNews.filter(item => 
+                item.title.toLowerCase().includes(lowerQuery) || 
+                item.content.toLowerCase().includes(lowerQuery)
+            );
+
+            found.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (found.length === 0) {
+                resultsList.innerHTML = '<p style="color:#888;">Ничего не найдено</p>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            found.forEach(item => {
+                const link = `news.html?id=${item.id}`;
+                const resultItem = `
+                    <div class="result-item">
+                        <a href="${link}" class="result-title">${item.title}</a>
+                        <div class="result-meta">${item.date} • ${item.category}</div>
+                    </div>
+                `;
+                resultsList.innerHTML += resultItem;
+            });
+
+            searchResults.style.display = 'block';
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value.trim());
+        });
+
+        loadNews();
+    </script>
 </body>
 </html>
