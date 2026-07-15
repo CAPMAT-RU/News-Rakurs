@@ -3,202 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Новость</title>
+    <title>{{headline}} — Ракурс NEWS</title>
 
-    <script type="application/ld+json" id="schema-data">
+    <!-- Микроразметка Schema.org -->
+    <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
-            "headline": "",
-            "datePublished": "",
-            "author": {"@type": "Organization", "name": "Ракурс NEWS"},
-            "publisher": {"@type": "Organization", "name": "Ракурс NEWS"}
+            "headline": "{{headline}}",
+            "datePublished": "{{datePublished}}",
+            "dateModified": "{{dateModified}}",
+            "author": {
+                "@type": "Organization",
+                "name": "Ракурс NEWS"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Ракурс NEWS",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "/logo.png"
+                }
+            },
+            "description": "{{description}}",
+            "image": [
+                "{{imageUrl}}"
+            ]
         }
     </script>
 
     <style>
-        * { box-sizing: border-box; }
-        body { 
-            background: #121212; 
-            color: #e0e0e0; 
-            font-family: sans-serif; 
-            line-height: 1.6; 
-            padding: 20px; 
-            margin: 0;
-        }
-
-        .back-link { 
-            display: inline-block; 
-            color: #888; 
-            text-decoration: underline; 
-            margin-bottom: 30px; 
-            font-size: 14px;
-        }
-        .back-link:hover { color: #ff9800; }
-
-        h1 { 
-            color: #ff9800; 
-            margin: 0 0 20px 0; 
-            font-size: 24px; 
-            line-height: 1.2;
-        }
-
-        .meta-row {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            color: #ff9800;
-            font-size: 13px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
+        :root { --bg: #121212; --card: #1e1e1e; --accent: #ff9800; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
+        header { border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: bold; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-size: 18px; }
         
-        #article-body { margin: 0; }
-        #article-body p {
-            margin: 0 0 15px 0;
-            text-align: left;
-        }
-
-        /* СТИЛЬ КНОПКИ "НА ГЛАВНУЮ" */
-        .main-btn {
-            display: block;
-            width: 100%;
-            max-width: 300px;
-            background-color: transparent;
-            border: 2px solid #ff9800;
-            color: #ff9800;
-            padding: 15px 20px;
-            text-align: center;
+        /* Кнопка "Назад" */
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 16px;
             text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 40px;
+            font-size: 14px;
             border-radius: 4px;
+            transition: all 0.3s;
+            cursor: pointer;
         }
-        .main-btn:hover {
-            background-color: #ff9800;
-            color: #121212;
-        }
+        .back-btn:hover { background: var(--accent); color: #000; }
 
-        #loading { 
-            text-align: center; 
-            margin-top: 50px; 
-            color: #ff9800; 
-            font-size: 18px;
-        }
-
-        .error-box { 
-            color: red; 
-            padding: 20px; 
-            background: #222; 
-            border-radius: 5px; 
-            text-align: center;
-            margin-top: 30px;
-            border: 1px solid red;
-        }
-
-        #debug-info {
-            background: #1a1a1a;
-            padding: 15px;
-            color: #aaa;
-            font-family: monospace;
-            margin-top: 20px;
-            border-left: 4px solid #ff9800;
-            display: none;
-        }
+        article { max-width: 800px; margin: 0 auto; }
+        h1 { color: var(--accent); margin-bottom: 15px; }
+        .meta { color: #888; font-size: 13px; margin-bottom: 25px; text-transform: uppercase; }
+        img.featured-image { width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; object-fit: cover; }
+        p { font-size: 16px; margin-bottom: 15px; color: #e0e0e0; }
+        a { color: var(--accent); text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link">← Вернуться к ленте новостей</a>
-    
-    <div id="loading">Загрузка новости...</div>
-    
-    <article id="content-area" style="display: none;">
-        <h1 id="article-title"></h1>
-        
-        <div class="meta-row">
-            <span id="article-date"></span>
-            <span id="article-category"></span>
-        </div>
-        
-        <div id="article-body"></div>
+    <header>
+        <div class="logo">РАКУРС NEWS</div>
+        <!-- Кнопка "Назад" -->
+        <a href="index.html" class="back-btn">← Назад к ленте</a>
+    </header>
 
-        <!-- КНОПКА "НА ГЛАВНУЮ" -->
-        <a href="index.html" class="main-btn">НА ГЛАВНУЮ</a>
+    <article>
+        <h1 id="article-title">{{headline}}</h1>
+        
+        <div class="meta">
+            Опубликовано: <span id="article-date">{{datePublished}}</span> • Категория: {{category}}
+        </div>
+
+        {{#imageUrl}}
+        <img src="{{imageUrl}}" alt="{{headline}}" class="featured-image">
+        {{/imageUrl}}
+
+        <div id="article-content">
+            {{content}}
+        </div>
     </article>
 
-    <div id="error" class="error-box" style="display:none;"></div>
-    <div id="debug-info"></div>
-
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const newsId = urlParams.get('id'); 
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
 
-        if (!newsId) {
-            document.getElementById('loading').innerText = "Ошибка: ID новости не передан в ссылке.";
-            document.getElementById('error').style.display = 'block';
-            document.getElementById('error').innerText = "Ссылка должна выглядеть как: .../news.html?id=iran-obnulit-starlink...";
-        } else {
-            console.log('Ищем новость с ID:', newsId);
-            loadAndShowNews(newsId);
-        }
+            if (id) {
+                fetch('news.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        const newsItem = data.find(item => item.id == id);
+                        if (newsItem) {
+                            document.getElementById('article-title').textContent = newsItem.title;
+                            document.getElementById('article-date').textContent = newsItem.date;
+                            
+                            // Динамическое обновление JSON-LD
+                            const ldScript = document.querySelector('script[type="application/ld+json"]');
+                            if (ldScript) {
+                                const jsonData = JSON.parse(ldScript.innerText);
+                                jsonData.headline = newsItem.title;
+                                jsonData.datePublished = newsItem.date; 
+                                jsonData.description = newsItem.content.substring(0, 160);
+                                if (newsItem.image) jsonData.image = [newsItem.image];
+                                ldScript.textContent = JSON.stringify(jsonData);
+                            }
 
-        async function loadAndShowNews(id) {
-            try {
-                const response = await fetch('news.json');
-                
-                if (!response.ok) {
-                    throw new Error('Файл news.json не найден (статус ' + response.status + ')');
-                }
-                
-                const allNews = await response.json();
-                const news = allNews.find(n => n.id === id);
-
-                if (news) {
-                    renderNews(news);
-                } else {
-                    const availableIds = allNews.map(n => n.id).join('\n- ');
-                    const msg = `Новость с ID "${id}" не найдена.\n\nДоступные ID в файле:\n- ${availableIds}`;
-                    throw new Error(msg);
-                }
-            } catch (e) {
-                document.getElementById('loading').style.display = 'none';
-                const errDiv = document.getElementById('error');
-                errDiv.style.display = 'block';
-                errDiv.innerText = e.message;
-                
-                const debugDiv = document.getElementById('debug-info');
-                debugDiv.style.display = 'block';
-                debugDiv.innerText = 'Техническая информация:\nЗапрошен ID: ' + (newsId || 'нет') + '\nОшибка JS: ' + e.toString();
-                
-                console.error(e);
+                            const contentDiv = document.getElementById('article-content');
+                            contentDiv.innerHTML = newsItem.content;
+                        } else {
+                            document.body.innerHTML = '<h1 style="color:#e0e0e0">Новость не найдена</h1><a href="index.html" style="color:var(--accent)">Вернуться на главную</a>';
+                        }
+                    })
+                    .catch(err => console.error(err));
             }
-        }
-
-        function renderNews(item) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content-area').style.display = 'block';
-
-            document.getElementById('article-title').innerText = item.title;
-            document.getElementById('page-title').innerText = item.title + " — Ракурс NEWS";
-
-            document.getElementById('article-date').innerText = item.date;
-            document.getElementById('article-category').innerText = item.category;
-
-            const paragraphs = item.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
-            document.getElementById('article-body').innerHTML = paragraphs;
-
-            const script = document.getElementById('schema-data');
-            const json = JSON.parse(script.innerText);
-            json.headline = item.title;
-            json.datePublished = item.date; 
-            script.innerText = JSON.stringify(json);
-        }
+        });
     </script>
 </body>
 </html>
