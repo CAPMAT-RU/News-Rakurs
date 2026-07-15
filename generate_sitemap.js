@@ -1,4 +1,3 @@
-```javascript
 const fs = require('fs');
 const path = require('path');
 const DOMAIN = 'https://rakurs-news.github.io';
@@ -80,4 +79,3 @@ try {
   console.error('💥 Неожиданная ошибка:', error.message);
   process.exit(1);
 }
-```
