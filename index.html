@@ -6,29 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ракурс NEWS — Лента</title>
     <style>
-        :root { --bg: #121212; --card: #1e1e1e; --accent: #ff9800; --text: #e0e0e0; }
+        :root { --bg: #121212; --card: #1e1e1e; --accent: #ff9800; --text: #e0e0e0; --input-bg: #000; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; line-height: 1.6; margin: 0; padding: 0; }
+        
         header { background: #000; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
         
-        .logo-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .site-logo {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border-radius: 4px;
-        }
-
+        .logo-wrapper { display: flex; align-items: center; gap: 10px; }
+        .site-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; }
         .logo { font-weight: bold; color: var(--accent); font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
-        
+
+        /* Стили поиска */
+        .search-container { display: flex; gap: 10px; align-items: center; width: 50%; } /* Половина ширины */
+        .search-input {
+            background: var(--input-bg);
+            border: 1px solid #333;
+            color: var(--text);
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+        }
+
         .container { max-width: 1200px; margin: auto; padding: 20px; }
         .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         
-        /* Карточка новости */
         .card { background: var(--card); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); cursor: pointer; transition: transform 0.2s; text-decoration: none; color: inherit; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
@@ -37,48 +44,65 @@
         p.preview { color: #aaa; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
         #error-msg { color: #ff4444; text-align: center; padding: 40px; display: none; }
+        #search-results { 
+            display: none; 
+            margin-bottom: 30px; 
+            background: #1a1a1a; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border-left: 4px solid var(--accent);
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .result-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #333; }
+        .result-title { color: var(--accent); font-weight: bold; font-size: 16px; text-decoration: none; }
+        .result-meta { color: #888; font-size: 12px; margin-top: 4px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-wrapper">
-            <!-- Вставь сюда имя своего файла с лого -->
-            <img src="logo.png" alt="Логотип" class="site-logo">
+            <img src="/images/logo.png" alt="Логотип" class="site-logo">
             <div class="logo">РАКУРС NEWS</div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Поиск новости...">
         </div>
     </header>
 
     <div class="container">
         <h1 style="margin-bottom: 20px;">Последние новости</h1>
+        
+        <div id="search-results">
+            <h3 style="color: var(--accent); margin-top: 0; margin-bottom: 15px;">Результаты поиска:</h3>
+            <div id="results-list"></div>
+        </div>
+
         <div id="error-msg">Ошибка загрузки новостей</div>
         <div id="news-container" class="news-grid"></div>
     </div>
 
     <script>
+        let allNews = [];
+
         async function loadNews() {
             const container = document.getElementById('news-container');
             const errorMsg = document.getElementById('error-msg');
 
             try {
-                // Относительный путь — работает на GitHub Pages
                 const response = await fetch('news.json');
                 if (!response.ok) throw new Error('Статус ' + response.status);
-                const data = await response.json();
+                allNews = await response.json();
 
-                data.forEach(item => {
-                    // Ссылка ведет на news.html?id=ID_новости
-                    const link = `news.html?id=${item.id}`;
+                // Сортируем по дате: новые сверху
+                allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                    const card = `
-                        <a href="${link}" class="card" aria-label="${item.title}">
-                            <span class="meta">${item.date} • ${item.category}</span>
-                            <h3>${item.title}</h3>
-                            <p class="preview">${item.content.substring(0, 150)}...</p>
-                        </a>
-                    `;
-                    container.innerHTML += card;
-                });
+                renderNews(allNews);
 
             } catch (err) {
                 console.error(err);
@@ -86,6 +110,69 @@
                 errorMsg.innerText = 'Ошибка: ' + err.message;
             }
         }
+
+        function renderNews(newsList) {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+            
+            newsList.forEach(item => {
+                const link = `news.html?id=${item.id}`;
+                const card = `
+                    <a href="${link}" class="card" aria-label="${item.title}">
+                        <span class="meta">${item.date} • ${item.category}</span>
+                        <h3>${item.title}</h3>
+                        <p class="preview">${item.content.substring(0, 150)}...</p>
+                    </a>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function performSearch(query) {
+            const resultsList = document.getElementById('results-list');
+            const searchResults = document.getElementById('search-results');
+            resultsList.innerHTML = '';
+
+            if (query.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const found = allNews.filter(item => 
+                item.title.toLowerCase().includes(lowerQuery) || 
+                item.content.toLowerCase().includes(lowerQuery)
+            );
+
+            // Сортируем найденные: самые новые сверху
+            found.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (found.length === 0) {
+                resultsList.innerHTML = '<p style="color:#888;">Ничего не найдено</p>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            found.forEach(item => {
+                const link = `news.html?id=${item.id}`;
+                const resultItem = `
+                    <div class="result-item">
+                        <a href="${link}" class="result-title">${item.title}</a>
+                        <div class="result-meta">${item.date} • ${item.category}</div>
+                    </div>
+                `;
+                resultsList.innerHTML += resultItem;
+            });
+
+            searchResults.style.display = 'block';
+        }
+
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value.trim());
+        });
+
         loadNews();
     </script>
 </body>
