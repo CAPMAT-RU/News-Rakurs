@@ -84,7 +84,6 @@
             font-size: 14px; 
             border-radius: 4px; 
             transition: all 0.3s; 
-            margin-top: 40px; 
         }
         .back-btn:hover { 
             background: var(--accent); 
@@ -116,12 +115,10 @@
             font-size: 16px; 
             margin-bottom: 15px; 
         }
-        .share-container { 
-            position: absolute; 
-            top: 0; 
-            right: 0; 
+        .navigation { 
             display: flex; 
-            gap: 10px; 
+            justify-content: space-between; 
+            margin-top: 40px; 
         }
     </style>
 </head>
@@ -150,11 +147,11 @@
     <div id="article-image-container"></div>
     <div id="article-content"></div>
     
-    <div class="share-container">
+    <div class="navigation">
+        <a href="index.html" class="back-btn">← Назад к новостям</a>
         <button class="share-btn" onclick="shareNews()" aria-label="Поделиться новостью">
             <img src="share-icon.png" alt="Поделиться" style="width: 24px; height: 24px;">
         </button>
-        <a href="index.html" class="back-btn">← Назад к новостям</a>
     </div>
 </article>
 
