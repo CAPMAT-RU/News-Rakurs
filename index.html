@@ -12,8 +12,8 @@
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="https://rakurs-news.github.io/rakurs-news/images/favicon.png">
 <style>
-:root { --bg: #ffffff; --card: #f9f9f9; --text: #1a1a1a; --accent: #ff9800; --meta: #666; }
-[data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #ff9800; --meta: #aaa; }
+:root { --bg: #ffffff; --card: #f9f9f9; --text: #1a1a1a; --accent: #ff9800; --meta: #666; --mobile-menu-bg: var(--card); --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
+[data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #ff9800; --meta: #aaa; --mobile-menu-bg: #000000; --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
 body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; transition: background 0.3s; }
 h1 { display: none; }
 #progress-bar { position: fixed; top: 0; left: 0; width: 0%; height:3px; background: var(--accent); z-index: 2000; }
@@ -51,6 +51,77 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 .footer { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); border-top: 1px solid var(--accent); display: flex; justify-content: center; align-items: center; }
 .social-icons { display: flex; gap: 35px; }
 .social-icons img { width: 40px; height: 40px; }
+
+/* Стили для мобильного меню */
+.mobile-menu-button {
+    display: none; /* Скрыто по умолчанию на десктопе */
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: all 0.3s;
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    margin-left: 1px; /* Отступ от кнопки темы */
+}
+.mobile-menu-button:hover {
+    background: var(--accent);
+    color: #000;
+}
+.mobile-menu-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px; /* Ширина мобильного меню */
+    height: 100%;
+    background: var(--mobile-menu-bg);
+    color: var(--mobile-menu-text);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1100;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 1px solid var(--mobile-menu-border);
+    overflow-y: auto;
+}
+.mobile-menu.open {
+    transform: translateX(0);
+}
+.mobile-menu .category-btn {
+    display: block; /* Каждая категория на новой строке */
+    width: 100%;
+    text-align: left;
+    padding: 12px 0; /* Уменьшен отступ для компактности */
+    font-size: 16px; /* Уменьшен шрифт для компактности */
+    border-bottom: 1px solid var(--mobile-menu-border);
+    color: var(--mobile-menu-text);
+    cursor: pointer; /* Добавлено для кнопок */
+}
+.mobile-menu .category-btn:last-child {
+    border-bottom: none;
+}
+.mobile-menu .category-btn.active {
+    color: var(--accent); /* Активный пункт остается акцентным */
+}
+
+@media (max-width: 768px) { /* Показываем бургер и скрываем десктопные категории */
+    .categories-wrapper {
+        display: none;
+    }
+    .mobile-menu-button {
+        display: flex;
+    }
+}
 </style>
 </head>
 <body>
@@ -75,10 +146,36 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
 </svg>
 </button>
+<!-- Кнопка бургер меню -->
+<button class="mobile-menu-button" id="mobileMenuButton" aria-label="Открыть меню">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</button>
 </div>
 </header>
 <div class="breadcrumbs">Главная / Лента</div>
 <div class="categories-wrapper" id="menu">
+    <button class="category-btn active" data-category="all">Все новости</button>
+    <button class="category-btn" data-category="СВО">СВО</button>
+    <button class="category-btn" data-category="Общество">Общество</button>
+    <button class="category-btn" data-category="Регионы">Регионы</button>
+    <button class="category-btn" data-category="Государство">Государство</button>
+    <button class="category-btn" data-category="Криминал">Криминал</button>
+    <button class="category-btn" data-category="Политика">Политика</button>
+    <button class="category-btn" data-category="Геополитика">Геополитика</button>
+    <button class="category-btn" data-category="Коррупция">Коррупция</button>
+    <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
+    <button class="category-btn" data-category="Спорт">Спорт</button>
+    <button class="category-btn" data-category="Наука">Наука</button>
+    <button class="category-btn" data-category="Стиль">Стиль</button>
+    <button class="category-btn" data-category="Культура">Культура</button>
+</div>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu" id="mobileMenu">
     <button class="category-btn active" data-category="all">Все новости</button>
     <button class="category-btn" data-category="СВО">СВО</button>
     <button class="category-btn" data-category="Общество">Общество</button>
@@ -208,12 +305,41 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    document.getElementById('menu').addEventListener('click', (e) => {
+    // Обработка кликов по категориям (для десктопа и мобильного меню)
+    const menuElement = document.getElementById('menu');
+    const mobileMenuElement = document.getElementById('mobileMenu');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+
+    function handleCategoryClick(e) {
         if (!e.target.classList.contains('category-btn')) return;
+        
+        // Снимаем класс active со всех кнопок в обоих меню
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        // Добавляем класс active кнопке, по которой кликнули
         e.target.classList.add('active');
+        
         const cat = e.target.dataset.category;
         renderNews(cat === 'all' ? allNews : allNews.filter(n => n.category === cat));
+
+        // Закрываем мобильное меню после выбора категории
+        if (mobileMenuElement.classList.contains('open')) {
+            mobileMenuElement.classList.remove('open');
+        }
+    }
+
+    menuElement.addEventListener('click', handleCategoryClick);
+    mobileMenuElement.addEventListener('click', handleCategoryClick);
+
+    // Открытие/закрытие мобильного меню
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenuElement.classList.toggle('open');
+    });
+
+    // Закрытие мобильного меню при клике вне его области
+    document.addEventListener('click', (e) => {
+        if (mobileMenuElement.classList.contains('open') && !mobileMenuElement.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+            mobileMenuElement.classList.remove('open');
+        }
     });
 
     loadNews();
