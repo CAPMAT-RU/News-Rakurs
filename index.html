@@ -6,7 +6,7 @@
 <title>Ракурс NEWS</title>
 <meta name="description" content="Ракурс NEWS — саркастичный взгляд на новости: политика, геополитика, криминал, общество и культура в ироничном освещении. Узнайте правду, скрытую за иронией!">
 <meta property="og:title" content="Ракурс NEWS">
-<meta property="og:description" content="Свежие новости с иронией. Вся правда в иронии.">
+<meta property="og:description" content="Свежие новости с иронией. Вся правда в иронии">
 <meta property="og:image" content="https://rakurs-news.github.io/rakurs-news/images/og-image.jpg">
 <meta property="og:url" content="https://rakurs-news.github.io/rakurs-news/">
 <meta property="og:type" content="website">
@@ -48,7 +48,7 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 .floating-buttons img { width: 30px; height: 30px; }
 }
 .card-image { width: 100%; height: 180px; object-fit: cover; border-radius: 4px 4px 0 0; margin-bottom: 12px; background-color: #333; }
-.footer { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); border-top: 1px solid var(--accent); display: flex; justify-content: center; align-items: center; }
+.footer { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg); border-top: 1px solid var(--accent); display: flex; justify-content: center; align-items: center; }
 .social-icons { display: flex; gap: 35px; }
 .social-icons img { width: 40px; height: 40px; }
 
@@ -67,7 +67,7 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     height: 32px;
     width: 32px;
     padding: 0;
-    margin-left: 1px; /* Отступ от кнопки темы */
+    margin-left: 10px; /* Отступ от кнопки темы */
 }
 .mobile-menu-button:hover {
     background: var(--accent);
@@ -114,12 +114,41 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     color: var(--accent); /* Активный пункт остается акцентным */
 }
 
+/* Стили для заголовка вместо breadcrumbs */
+.page-title-wrapper {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.page-title-indicator {
+    width: 4px;
+    height: 20px; /* Чуть больше высоты букв */
+    background-color: var(--accent);
+}
+.page-title {
+    font-size: 20px; /* Размер шрифта H3 */
+    font-weight: bold;
+    margin: 0;
+}
+
 @media (max-width: 768px) { /* Показываем бургер и скрываем десктопные категории */
     .categories-wrapper {
         display: none;
     }
     .mobile-menu-button {
         display: flex;
+    }
+    .page-title-wrapper { /* Адаптация заголовка для мобильных */
+        padding: 10px 15px;
+        gap: 8px;
+    }
+    .page-title {
+        font-size: 18px;
+    }
+    .page-title-indicator {
+        height: 18px;
     }
 }
 </style>
@@ -156,7 +185,11 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 </button>
 </div>
 </header>
-<div class="breadcrumbs">Главная / Лента</div>
+<!-- Заголовок вместо breadcrumbs -->
+<div class="page-title-wrapper">
+    <div class="page-title-indicator"></div>
+    <h3 class="page-title">Все новости</h3>
+</div>
 <div class="categories-wrapper" id="menu">
     <button class="category-btn active" data-category="all">Все новости</button>
     <button class="category-btn" data-category="СВО">СВО</button>
