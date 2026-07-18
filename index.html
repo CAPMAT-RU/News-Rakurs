@@ -222,6 +222,22 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     <button class="category-btn" data-category="Коррупция">Коррупция</button>
     <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
     <button class="category-btn" data-category="Спорт">Спорт</button>
+    <button class="category-btn" data-category="Культура">Культура</button>
+</div>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu" id="mobileMenu">
+    <button class="category-btn active" data-category="all">Все новости</button>
+    <button class="category-btn" data-category="СВО">СВО</button>
+    <button class="category-btn" data-category="Общество">Общество</button>
+    <button class="category-btn" data-category="Регионы">Регионы</button>
+    <button class="category-btn" data-category="Государство">Государство</button>
+    <button class="category-btn" data-category="Криминал">Криминал</button>
+    <button class="category-btn" data-category="Политика">Политика</button>
+    <button class="category-btn" data-category="Геополитика">Геополитика</button>
+    <button class="category-btn" data-category="Коррупция">Коррупция</button>
+    <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
+    <button class="category-btn" data-category="Спорт">Спорт</button>
     <button class="category-btn" data-category="Наука">Наука</button>
     <button class="category-btn" data-category="Стиль">Стиль</button>
     <button class="category-btn" data-category="Культура">Культура</button>
@@ -264,13 +280,13 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     }
 
     let allNews = [];
-    let featuredNewsId = null; // ID главной новости
+    let featuredNewsId = null;
 
     async function loadNews() {
         try {
             const res = await fetch('news.json');
             allNews = await res.json();
-            featuredNewsId = allNews.featuredNewsId; // Получение ID главной новости
+            featuredNewsId = allNews.featuredNewsId;
             document.getElementById('loader').style.display = 'none';
             renderNews(allNews);
         } catch(e) {
@@ -283,7 +299,6 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
         const container = document.getElementById('news-container');
         container.innerHTML = '';
         
-        // Отображение главной новости
         if (featuredNewsId && data.some(item => item.id === featuredNewsId)) {
             const featuredNews = data.find(item => item.id === featuredNewsId);
             if (featuredNews) {
@@ -299,15 +314,13 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
                 document.getElementById('main-news').style.display = 'block';
             }
         } else {
-            document.getElementById('main-news').style.display = 'none'; // Скрываем, если нет главной новости
+            document.getElementById('main-news').style.display = 'none';
         }
 
-        // Отображение остальных новостей
         const filteredNews = data.filter(item => item.id !== featuredNewsId);
         container.innerHTML += filteredNews.map(item => {
             let title = query ? item.title.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>') : item.title;
-            
-return `<a href="/${item.id}.html" rel="bookmark" style="text-decoration: none; color: inherit;">
+            return `<a href="/${item.id}.html" rel="bookmark" style="text-decoration: none; color: inherit;">
                         <div class="card">
                             <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
                             <span class="meta">${item.category} • ${item.date}</span>
@@ -328,14 +341,12 @@ return `<a href="/${item.id}.html" rel="bookmark" style="text-decoration: none; 
                 return; 
             }
             
-            const filtered = allNews.filter(n => 
-                n.title.toLowerCase().includes(val) || 
-                (n.description && n.description.toLowerCase().includes(val))
-            );
+            const filtered = allNews
+                .filter(n => n.title.toLowerCase().includes(val))
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
             
             resDiv.innerHTML = filtered.length ? filtered.map(n => 
-                // Исправлено: вызов handleSearchResultClick и закрытие подсказки
-                `<div class="result-item" onclick="handleSearchResultClick(${n.id}); closeSearchResults();">
+                `<div class="result-item" onclick="handleSearchResultClick(${n.id});">
                     ${n.title.replace(new RegExp(`(${val})`, 'gi'), '<span class="highlight">$1</span>')}
                 </div>`
             ).join('') : '<div class="result-item">Ничего не найдено</div>';
@@ -343,42 +354,28 @@ return `<a href="/${item.id}.html" rel="bookmark" style="text-decoration: none; 
         }, 300);
     });
 
-    // Новая функция для обработки клика по результату поиска
     function handleSearchResultClick(newsId) {
-        // Переход на страницу статьи с нужным ID
-        window.location.href = `article.html?id=${newsId}`;
+        document.getElementById('searchInput').value = '';
+        document.getElementById('search-results').style.display = 'none';
+        window.location.href = `/${newsId}.html`;
     }
 
-    // Функция для закрытия подсказки поиска
-    function closeSearchResults() {
-        const resDiv = document.getElementById('search-results');
-        if (resDiv) {
-            resDiv.style.display = 'none';
-        }
-    }
-
-    // Обработка кликов по категориям (для десктопа и мобильного меню)
     const menuElement = document.getElementById('menu');
     const mobileMenuElement = document.getElementById('mobileMenu');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
-    const pageTitleElement = document.querySelector('.page-title'); // Получаем заголовок страницы
+    const pageTitleElement = document.querySelector('.page-title');
 
     function handleCategoryClick(e) {
         if (!e.target.classList.contains('category-btn')) return;
         
-        // Снимаем класс active со всех кнопок в обоих меню
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        // Добавляем класс active кнопке, по которой кликнули
         e.target.classList.add('active');
         
         const cat = e.target.dataset.category;
-        
-        // Обновляем заголовок страницы
         pageTitleElement.textContent = cat === 'all' ? 'Все новости' : cat;
 
         renderNews(cat === 'all' ? allNews : allNews.filter(n => n.category === cat));
 
-        // Закрываем мобильное меню после выбора категории
         if (mobileMenuElement.classList.contains('open')) {
             mobileMenuElement.classList.remove('open');
         }
@@ -387,12 +384,10 @@ return `<a href="/${item.id}.html" rel="bookmark" style="text-decoration: none; 
     menuElement.addEventListener('click', handleCategoryClick);
     mobileMenuElement.addEventListener('click', handleCategoryClick);
 
-    // Открытие/закрытие мобильного меню
     mobileMenuButton.addEventListener('click', () => {
         mobileMenuElement.classList.toggle('open');
     });
 
-    // Закрытие мобильного меню при клике вне его области
     document.addEventListener('click', (e) => {
         if (mobileMenuElement.classList.contains('open') && !mobileMenuElement.contains(e.target) && !mobileMenuButton.contains(e.target)) {
             mobileMenuElement.classList.remove('open');
