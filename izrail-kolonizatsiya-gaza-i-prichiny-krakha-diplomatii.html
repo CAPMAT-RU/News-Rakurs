@@ -304,31 +304,35 @@
             localStorage.setItem('theme', newTheme);
         }
         
-        // Функция для кнопки "Поделиться"
         function shareNews() {
-            const newsUrl = window.location.href; // URL текущей страницы
-            const newsTitle = document.title; // Заголовок текущей страницы
+            const newsUrl = window.location.href;
+            const newsTitle = document.title;
 
-            // Создаем текст для дележки
-            const shareText = `${newsTitle} - ${newsUrl}`;
-            
-            // Пытаемся использовать Web Share API, если он доступен
+            // Приоритет: пробуем нативный шаринг (для мобильных)
             if (navigator.share) {
                 navigator.share({
                     title: newsTitle,
                     url: newsUrl,
                 }).then(() => {
-                    console.log('Успешно поделились');
+                    console.log('Успешно поделились через нативный интерфейс');
                 }).catch(console.error);
             } else {
-                // Если API не поддерживается, открываем окно для дележки через соцсети
-                const encodedText = encodeURIComponent(shareText);
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedText}`;
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
-                const emailUrl = `mailto:?subject=${newsTitle}&body=${encodedText}`;
+                // Фоллбэк: открываем соцсети с ПРАВИЛЬНЫМИ параметрами
+                // Раньше ты передавал в ?u= и текст, и ссылку — соцсети это не понимают.
+                // Теперь: ?url= только ссылка, ?text= только заголовок.
                 
-                const shareWindow = window.open(facebookUrl, '_blank'); // Открываем Facebook по умолчанию
-                shareWindow.focus();
+                const encodedUrl = encodeURIComponent(newsUrl);
+                const encodedTitle = encodeURIComponent(newsTitle);
+
+                // VK: ?url=...&title=...
+                const vkUrl = `https://vk.com/share.php?url=${encodedUrl}&title=${encodedTitle}`;
+                
+                // Telegram: ?url=...&text=...
+                const tgUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
+
+                // Открываем Telegram (он лучше всего показывает превью), VK можно открыть в фоне
+                window.open(tgUrl, '_blank');
+                // Если хочешь открывать VK вместо TG, замени строку выше на: window.open(vkUrl, '_blank');
             }
         }
     </script>
