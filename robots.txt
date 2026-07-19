@@ -1,4 +1,7 @@
-User-agent: *
-Disallow: /drafts/
+User-agent: Yandex
+Allow: /
 
-Sitemap: https://rakurs-news.github.io/sitemap.xml
+User-agent: *
+Allow: /
+
+Sitemap: https://rakurs-news.github.io/rakurs-news/sitemap.xml
