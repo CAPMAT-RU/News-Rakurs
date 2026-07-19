@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="robots" content="index, follow">
+<meta http-equiv="refresh" content="3600">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ракурс NEWS</title>
-<meta name="description" content="Ракурс NEWS — ироничный взгляд на новости и скрытую правду!" />
-<meta property="og:title" content="Ракурс NEWS" />
-<meta property="og:description" content="Ракурс NEWS: ироничный взгляд на главные события дня. Политика, СВО, криминал и культура — разбираем новости с сарказмом и без лишней воды." />
-<meta property="og:image" content="https://rakurs-news.github.io/rakurs-news/images/og-image.jpg" />
-<meta property="og:url" content="https://rakurs-news.github.io/rakurs-news/" />
-<meta property="og:type" content="website" />
-<link rel="icon" type="image/png" href="https://rakurs-news.github.io/rakurs-news/images/favicon.png" />
+<meta name="description" content="Ракурс NEWS — саркастичный взгляд на новости: политика, геополитика, криминал, общество и культура в ироничном освещении. Узнайте правду, скрытую за иронией!">
+<meta property="og:title" content="Ракурс NEWS">
+<meta property="og:description" content="Свежие новости с иронией. Вся правда в иронии">
+<meta property="og:image" content="https://rakurs-news.github.io/rakurs-news/images/og-image.jpg">
+<meta property="og:url" content="https://rakurs-news.github.io/rakurs-news/">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="https://rakurs-news.github.io/rakurs-news/images/favicon.png">
 <!-- Рекомендация Яндекса: связь десктопной и мобильной версий -->
-<link rel="alternate" href="https://rakurs-news.github.io/rakurs-news/" media="only screen and (max-width: 600px)" />
+<link rel="alternate" href="https://rakurs-news.github.io/rakurs-news/" media="only screen and (max-width: 600px)">
+
 <style>
 :root { --bg: #ffffff; --card: #f9f9f9; --text: #1a1a1a; --accent: #ff9800; --meta: #666; --mobile-menu-bg: var(--card); --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
 [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #ff9800; --meta: #aaa; --mobile-menu-bg: #000000; --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
@@ -157,10 +160,10 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 /* Индикатор скролла справа (тонкий, сверху) */
 .scroll-indicator-track {
     position: fixed;
-    right: 4px; /* Сдвинули чуть ближе к краю */
-    top: 0; /* Строго сверху */
-    width: 4px; /* Тоньше, чем было 6px */
-    height: 100vh; /* Фиксированная высота экрана, чтобы всегда был виден сверху */
+    right: 4px; 
+    top: 0; 
+    width: 4px; 
+    height: 100vh; 
     background: rgba(0, 0, 0, 0.08);
     pointer-events: none;
     z-index: 999;
@@ -172,66 +175,8 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     width: 100%;
     height: 0%;
     background: var(--accent);
-    border-radius: 2px; /* Чуть меньше скругление для аккуратности */
+    border-radius: 2px; 
     pointer-events: none;
-}
-
-/* Стили для пагинации */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    gap: 5px;
-}
-
-.pagination .page-btn {
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid var(--accent);
-    padding: 8px 12px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s, color 0.3s;
-}
-
-.pagination .page-btn:hover {
-    background: var(--accent);
-    color: #000;
-}
-
-.pagination .page-btn.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-}
-
-.pagination .page-btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.pagination .page-number {
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid var(--accent);
-    padding: 8px 12px;
-    border-radius: 3px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-}
-
-.pagination .page-number:hover {
-    background: var(--accent);
-    color: #000;
-}
-
-.pagination .page-number.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
 }
 </style>
 </head>
@@ -272,19 +217,14 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     <div class="page-title-indicator"></div>
     <h3 class="page-title">Все новости</h3>
 </div>
-
-<!-- Вставляем сюда ссылку на страницу -->
-<ul>
-  <li><a href="kognitivnaya-voyna-i-ataki-dronov-na-moskvu.html">Когнитивная война и атаки дронов на Москву</a></li>
-</ul>
-
 <div class="categories-wrapper" id="menu">
     <button class="category-btn active" data-category="all">Все новости</button>
     <button class="category-btn" data-category="СВО">СВО</button>
     <button class="category-btn" data-category="Общество">Общество</button>
     <button class="category-btn" data-category="Регионы">Регионы</button>
-    <button class="category-btn" data-category="Государство">Государство</button>
-    <button class="category-btn" data-category="Криминал">Криминал</button>
+    <button class="category-btn" data-
+    category="Государство">Государство</button>
+        <button class="category-btn" data-category="Криминал">Криминал</button>
     <button class="category-btn" data-category="Политика">Политика</button>
     <button class="category-btn" data-category="Геополитика">Геополитика</button>
     <button class="category-btn" data-category="Коррупция">Коррупция</button>
@@ -303,14 +243,14 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     <button class="category-btn" data-category="Регионы">Регионы</button>
     <button class="category-btn" data-category="Государство">Государство</button>
     <button class="category-btn" data-category="Криминал">Криминал</button>
-<button class="category-btn" data-category="Политика">Политика</button>
-<button class="category-btn" data-category="Геополитика">Геополитика</button>
-<button class="category-btn" data-category="Коррупция">Коррупция</button>
-<button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
-<button class="category-btn" data-category="Спорт">Спорт</button>
-<button class="category-btn" data-category="Наука">Наука</button>
-<button class="category-btn" data-category="Стиль">Стиль</button>
-<button class="category-btn" data-category="Культура">Культура</button>
+    <button class="category-btn" data-category="Политика">Политика</button>
+    <button class="category-btn" data-category="Геополитика">Геополитика</button>
+    <button class="category-btn" data-category="Коррупция">Коррупция</button>
+    <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
+    <button class="category-btn" data-category="Спорт">Спорт</button>
+    <button class="category-btn" data-category="Наука">Наука</button>
+    <button class="category-btn" data-category="Стиль">Стиль</button>
+    <button class="category-btn" data-category="Культура">Культура</button>
 </div>
 
 <!-- Горизонтальный индикатор скролла вверху -->
@@ -331,29 +271,22 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 
 <div id="news-container" class="news-grid" style="padding-bottom: 80px;"></div>
 
-<!-- Пагинация -->
-<div class="pagination" id="pagination">
-    <button class="page-btn" id="prevPageBtn" disabled>&lt;</button>
-    <div id="pageNumbers"></div>
-    <button class="page-btn" id="nextPageBtn">&gt;</button>
-</div>
-
 <button id="scrollToTop" onclick="scrollToTop()" aria-label="Вернуться наверх" role="button">
-    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: auto;">
         <line x1="12" y1="19" x2="12" y2="5"></line>
         <polyline points="5 12 12 5 19 12"></polyline>
     </svg>
 </button>
 
 <div class="floating-buttons" id="floatingButtons">
-    <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK" /></a>
-    <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram" /></a>
+    <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK"></a>
+    <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram"></a>
 </div>
 
 <div class="footer">
     <div class="social-icons">
-        <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK" /></a>
-        <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram" /></a>
+        <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK"></a>
+        <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram"></a>
     </div>
 </div>
 
@@ -370,14 +303,6 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 
     let allNews = [];
     let featuredNewsId = null;
-    const NEWS_PER_PAGE = 20;
-    let currentPage = 1;
-    let totalPages = 0;
-
-    const paginationContainer = document.getElementById('pagination');
-    const pageNumbersContainer = document.getElementById('pageNumbers');
-    const prevPageBtn = document.getElementById('prevPageBtn');
-    const nextPageBtn = document.getElementById('nextPageBtn');
 
     async function loadNews() {
         try {
@@ -385,51 +310,70 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
             if (!res.ok) throw new Error('Не удалось загрузить news.json');
             allNews = await res.json();
             featuredNewsId = allNews.featuredNewsId;
-            document.getElementById('loader').style.display = 'none';
+            
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.display = 'none';
+            
             renderNews(allNews);
-            updatePagination();
         } catch(e) {
             console.error('Ошибка загрузки:', e);
-            document.getElementById('loader').innerHTML = `<p style="color: red;">Ошибка: ${e.message}</p>`;
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.innerHTML = `<p style="color: red;">Ошибка: ${e.message}</p>`;
+                loader.style.color = 'red';
+            }
         }
     }
 
     function renderNews(data, query = '') {
         const container = document.getElementById('news-container');
+        if (!container) return;
         container.innerHTML = '';
         
-        const startIndex = (currentPage - 1) * NEWS_PER_PAGE;
-        const endIndex = startIndex + NEWS_PER_PAGE;
-        const paginatedNews = data.slice(startIndex, endIndex);
-
+        // --- Блок с главной новостью (Featured) ---
         if (featuredNewsId && data.some(item => item.id === featuredNewsId)) {
             const featuredNews = data.find(item => item.id === featuredNewsId);
             if (featuredNews) {
                 const featuredHTML = `
-                    <div class="card" style="width: 100%;">
-                        <img src="${featuredNews.image || '/images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy" />
+                    <div class="card featured-card" style="width: 100%;">
+                        <img src="${featuredNews.image || '/images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy">
                         <span class="meta">${featuredNews.category} • ${featuredNews.date}</span>
                         <h3>${featuredNews.title}</h3>
                         <div class="desc">${featuredNews.description || ''}</div>
                     </div>
                 `;
-                document.getElementById('main-news').innerHTML = featuredHTML;
-                document.getElementById('main-news').style.display = 'block';
+                const mainNewsEl = document.getElementById('main-news');
+                if (mainNewsEl) {
+                    mainNewsEl.innerHTML = featuredHTML;
+                    mainNewsEl.style.display = 'block';
+                }
             }
         } else {
-            document.getElementById('main-news').style.display = 'none';
+            const mainNewsEl = document.getElementById('main-news');
+            if (mainNewsEl) mainNewsEl.style.display = 'none';
         }
 
-        const filteredNews = paginatedNews.filter(item => item.id !== featuredNewsId);
+        // --- Обычные новости (Лента) ---
+        const filteredNews = data.filter(item => item.id !== featuredNewsId);
+        
         container.innerHTML += filteredNews.map(item => {
             let title = query ? item.title.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>') : item.title;
-            return `<a href="/rakurs-news/${item.id}.html" rel="bookmark" style="text-decoration: none; color: inherit;">
-                        <div class="card">
-                            <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy" />
-                            <span class="meta">${item.category} • ${item.date}</span>
-                            <h3>${title}</h3>
-                            <div class="desc">${item.description || ''}</div>
-                        </div></a>`;
+            
+            return `
+                <div class="card" 
+                     onclick="showFullNews(${JSON.stringify(item)})" 
+                     style="cursor: pointer; text-decoration: none; color: inherit;">
+                    
+                    <img src="${item.image || '/images/placeholder.jpg'}" 
+                         alt="${item.title}" 
+                         class="card-image" 
+                         loading="lazy">
+                     
+                    <span class="meta">${item.category} • ${item.date}</span>
+                    <h3>${title}</h3>
+                    <div class="desc">${item.description || ''}</div>
+                </div>
+            `;
         }).join('');
     }
 
@@ -437,36 +381,38 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     const searchResults = document.getElementById('search-results');
     let searchTimeout;
 
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        const val = e.target.value.trim().toLowerCase();
+    if (searchInput && searchResults) {
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const val = e.target.value.trim().toLowerCase();
 
-        if (val.length < 3) { 
-            searchResults.style.display = 'none'; 
-            return; 
-        }
-        
-        const filtered = allNews
-            .filter(n => n.title.toLowerCase().includes(val))
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        if (filtered.length === 0) {
-            searchResults.innerHTML = '<div class="result-item">Ничего не найдено</div>';
+            if (val.length < 3) { 
+                searchResults.style.display = 'none'; 
+                return; 
+            }
+            
+            const filtered = allNews
+                .filter(n => n.title.toLowerCase().includes(val))
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (filtered.length === 0) {
+                searchResults.innerHTML = '<div class="result-item">Ничего не найдено</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            searchResults.innerHTML = filtered.map(n => 
+                `<div class="result-item" onclick="handleSearchResultClick('${n.id}')">
+                    ${n.title.replace(new RegExp(`(${val})`, 'gi'), '<span class="highlight">$1</span>')}
+                </div>`
+            ).join('');
             searchResults.style.display = 'block';
-            return;
-        }
-
-        searchResults.innerHTML = filtered.map(n => 
-            `<div class="result-item" onclick="handleSearchResultClick('${n.id}')">
-                ${n.title.replace(new RegExp(`(${val})`, 'gi'), '<span class="highlight">$1</span>')}
-            </div>`
-        ).join('');
-        searchResults.style.display = 'block';
-    });
+        });
+    }
 
     function handleSearchResultClick(newsId) {
-        searchInput.value = '';
-        searchResults.style.display = 'none';
+        if (searchInput) searchInput.value = '';
+        if (searchResults) searchResults.style.display = 'none';
         window.location.href = `/${newsId}.html`;
     }
 
@@ -482,116 +428,99 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
         e.target.classList.add('active');
         
         const cat = e.target.dataset.category;
-        pageTitleElement.textContent = cat === 'all' ? 'Все новости' : cat;
+        if (pageTitleElement) {
+            pageTitleElement.textContent = cat === 'all' ? 'Все новости' : cat;
+        }
 
-        currentPage = 1; // Сброс на первую страницу при смене категории
         renderNews(cat === 'all' ? allNews : allNews.filter(n => n.category === cat));
-        updatePagination();
 
-        if (mobileMenuElement.classList.contains('open')) {
+        if (mobileMenuElement && mobileMenuElement.classList.contains('open')) {
             mobileMenuElement.classList.remove('open');
         }
     }
 
-    menuElement.addEventListener('click', handleCategoryClick);
-    mobileMenuElement.addEventListener('click', handleCategoryClick);
+    if (menuElement) menuElement.addEventListener('click', handleCategoryClick);
+    if (mobileMenuElement) mobileMenuElement.addEventListener('click', handleCategoryClick);
 
-    mobileMenuButton.addEventListener('click', () => {
-        mobileMenuElement.classList.toggle('open');
-    });
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', () => {
+            if (mobileMenuElement) mobileMenuElement.classList.toggle('open');
+        });
+    }
 
     document.addEventListener('click', (e) => {
-        if (mobileMenuElement.classList.contains('open') && !mobileMenuElement.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+        if (mobileMenuElement && mobileMenuElement.classList.contains('open') && !mobileMenuElement.contains(e.target) && !mobileMenuButton.contains(e.target)) {
             mobileMenuElement.classList.remove('open');
-        }
-    });
-
-    function updatePagination() {
-        const currentNewsList = document.querySelectorAll('#news-container .card').length > 0 ? allNews : allNews.filter(n => n.category === document.querySelector('.category-btn.active').dataset.category);
-        totalPages = Math.ceil(currentNewsList.length / NEWS_PER_PAGE);
-        pageNumbersContainer.innerHTML = '';
-
-        const maxPagesToShow = 5;
-        const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-        const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-        for (let i = startPage; i <= endPage; i++) {
-            const pageNumBtn = document.createElement('button');
-            pageNumBtn.classList.add('page-number');
-            pageNumBtn.textContent = i;
-            if (i === currentPage) {
-                pageNumBtn.classList.add('active');
-            }
-            pageNumBtn.addEventListener('click', () => {
-                currentPage = i;
-                renderNews(allNews);
-                updatePagination();
-            });
-            pageNumbersContainer.appendChild(pageNumBtn);
-        }
-
-        if (startPage > 1) {
-            const ellipsisStart = document.createElement('span');
-            ellipsisStart.textContent = '...';
-            ellipsisStart.classList.add('page-number');
-            pageNumbersContainer.prepend(ellipsisStart);
-        }
-        if (endPage < totalPages) {
-            const ellipsisEnd = document.createElement('span');
-            ellipsisEnd.textContent = '...';
-            ellipsisEnd.classList.add('page-number');
-            pageNumbersContainer.appendChild(ellipsisEnd);
-        }
-
-        prevPageBtn.disabled = currentPage === 1;
-        nextPageBtn.disabled = currentPage === totalPages;
-
-        if (totalPages <= 1) {
-            paginationContainer.style.display = 'none';
-        } else {
-            paginationContainer.style.display = 'flex';
-        }
-    }
-
-    prevPageBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderNews(allNews);
-            updatePagination();
-        }
-    });
-
-    nextPageBtn.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderNews(allNews);
-            updatePagination();
         }
     });
 
     loadNews();
 
-    // Логика скролла
+    // Логика горизонтального индикатора скролла вверху
     window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrollPercent = (scrollTop / docHeight) * 100;
-        document.getElementById('top-scroll-indicator').style.width = scrollPercent + '%';
+        if (docHeight > 0) {
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            const indicator = document.getElementById('top-scroll-indicator');
+            if (indicator) indicator.style.width = scrollPercent + '%';
+        }
     });
 
     function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('scrollToTop');
-        if (window.scrollY > 300) {
-            btn.style.display = 'flex';
-            btn.style.opacity = '0.7';
-        } else {
-            btn.style.display = 'none';
+        if (btn) {
+            if (window.scrollY > 300) {
+                btn.style.display = 'flex';
+                btn.style.opacity = '0.7';
+            } else {
+                btn.style.display = 'none';
+            }
         }
     });
+
+    function showFullNews(news) {
+        const container = document.getElementById('full-news-container');
+        const titleEl = document.getElementById('fn-title');
+        const metaEl = document.getElementById('fn-meta');
+        const imgEl = document.getElementById('fn-image');
+        const contentEl = document.getElementById('fn-content');
+
+        if (!container || !titleEl || !metaEl || !imgEl || !contentEl) {
+            console.error('Элементы для показа полной новости не найдены!');
+            return;
+        }
+
+        titleEl.textContent = news.title;
+        metaEl.textContent = `${news.category} • ${news.date}`;
+        imgEl.src = news.image;
+        contentEl.innerHTML = news.fullText || news.content || news.description; 
+
+        container.style.display = 'block';
+        
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        setTimeout(() => {
+            window.scrollBy(0, -80);
+        }, 300);
+    }
 </script>
+
+<!-- Блок для полного текста новости -->
+<div id="full-news-container" style="padding: 20px; max-width: 800px; margin: 40px auto; display: none; background: var(--card); border-left: 4px solid var(--accent);">
+    <button onclick="document.getElementById('full-news-container').style.display='none'" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold;">← Назад к ленте</button>
+    <h2 id="fn-title" style="margin-top:20px;"></h2>
+    <span id="fn-meta" style="color:var(--meta); font-size:12px; margin-bottom:15px; display:block;"></span>
+    <img id="fn-image" src="" alt="" style="width:100%; height:auto; border-radius:4px; margin-bottom:15px;">
+    <div id="fn-content" style="line-height:1.6; color:var(--text);"></div>
+</div>
+
 </body>
 </html>
