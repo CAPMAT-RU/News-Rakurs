@@ -7,11 +7,11 @@
     <meta name="description" content="Ракурс NEWS — саркастичный взгляд на новости: политика, геополитика, криминал, общество и культура в ироничном освещении. Узнайте правду, скрытую за иронией!">
     <meta property="og:title" content="Ракурс NEWS">
     <meta property="og:description" content="Свежие новости с иронией. Вся правда в иронии">
-    <meta property="og:image" content="https://rakurs-news.github.io/rakurs-news/images/og-image.jpg">
-    <meta property="og:url" content="https://rakurs-news.github.io/rakurs-news/">
+    <meta property="og:image" content="images/og-image.jpg">
+    <meta property="og:url" content="index.html">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="https://rakurs-news.github.io/rakurs-news/images/favicon.png">
-    <link rel="alternate" href="https://rakurs-news.github.io/rakurs-news/" media="only screen and (max-width: 600px)">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="alternate" href="index.html" media="only screen and (max-width: 600px)">
     <style>
         :root { --bg: #ffffff; --card: #f9f9f9; --text: #1a1a1a; --accent: #ff9800; --meta: #666; --mobile-menu-bg: var(--card); --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
         [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #ff9800; --meta: #aaa; --mobile-menu-bg: #000000; --mobile-menu-text: var(--text); --mobile-menu-border: var(--accent); }
@@ -101,7 +101,7 @@
     <h1>Актуальные новости Ракурс NEWS</h1>
     <div id="progress-bar"></div>
     <header>
-        <div class="logo-wrapper"><img src="/images/logo.png" alt="Logo"><span>Ракурс NEWS</span></div>
+        <div class="logo-wrapper"><img src="images/logo.png" alt="Logo"><span>Ракурс NEWS</span></div>
         <div class="controls-wrapper">
             <div class="search-wrapper">
                 <input type="text" id="searchInput" placeholder="Поиск...">
@@ -186,13 +186,13 @@
         </svg>
     </button>
     <div class="floating-buttons" id="floatingButtons">
-        <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK"></a>
-        <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram"></a>
+        <a href="https://vk.ru/rakurs_news" target="_blank"><img src="images/VK.png" alt="VK"></a>
+        <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="images/Telegram.png" alt="Telegram"></a>
     </div>
     <div class="footer">
         <div class="social-icons">
-            <a href="https://vk.ru/rakurs_news" target="_blank"><img src="/images/VK.png" alt="VK"></a>
-            <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="/images/Telegram.png" alt="Telegram"></a>
+            <a href="https://vk.ru/rakurs_news" target="_blank"><img src="images/VK.png" alt="VK"></a>
+            <a href="https://t.me/RAKURS_NEWS_RU" target="_blank"><img src="images/Telegram.png" alt="Telegram"></a>
         </div>
     </div>
     <div class="modal-overlay" id="newsModal">
@@ -237,11 +237,22 @@
             }
         }
 
+        const observerOptions = {
+            threshold: 0.1
+        };
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
         function renderNews(data, query = '') {
             const container = document.getElementById('news-container');
             container.innerHTML = '';
 
-            // 1. Рендер главной новости (Featured)
             if (featuredNewsId && data.some(item => item.id === featuredNewsId)) {
                 const featuredNews = data.find(item => item.id === featuredNewsId);
                 if (featuredNews) {
@@ -250,9 +261,9 @@
                         : featuredNews.title;
                     
                     const featuredHTML = `
-                        <a href="/news-${featuredNews.id}.html" class="card-link" style="text-decoration: none; color: inherit; display: block;">
+                        <a href="news-${featuredNews.id}.html" class="card-link" style="text-decoration: none; color: inherit; display: block;">
                             <div class="card">
-                                <img src="${featuredNews.image || '/images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy">
+                                <img src="${featuredNews.image || 'images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy">
                                 <div class="meta-container">
                                     <span class="meta-date">${featuredNews.category} • ${featuredNews.date}</span>
                                     <span class="meta-author">${featuredNews.author || ''}</span>
@@ -268,16 +279,15 @@
                 document.getElementById('main-news').style.display = 'none';
             }
 
-            // 2. Рендер остальных новостей
             const filteredNews = data.filter(item => item.id !== featuredNewsId);
             
             container.innerHTML += filteredNews.map(item => {
                 let title = query ? item.title.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>') : item.title;
                 
                 return `
-                    <a href="/news-${item.id}.html" class="card-link" style="text-decoration: none; color: inherit; display: block;">
+                    <a href="news-${item.id}.html" class="card-link" style="text-decoration: none; color: inherit; display: block;">
                         <div class="card">
-                            <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
+                            <img src="${item.image || 'images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
                             <div class="meta-container">
                                 <span class="meta-date">${item.category} • ${item.date}</span>
                                 <span class="meta-author">${item.author || ''}</span>
@@ -287,6 +297,13 @@
                         </div>
                     </a>`;
             }).join('');
+
+            // Применяем Observer к новым карточкам
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                observer.observe(card);
+            });
         }
 
         const searchInput = document.getElementById('searchInput');
@@ -319,7 +336,7 @@
         function handleSearchResultClick(newsId) {
             searchInput.value = '';
             searchResults.style.display = 'none';
-            window.location.href = `/news-${newsId}.html`;
+            window.location.href = `news-${newsId}.html`;
         }
 
         const menuElement = document.getElementById('menu');
@@ -372,7 +389,7 @@
         function shareNews() {
             const newsTitle = document.getElementById('modalTitle').textContent;
             const newsId = allNews.find(n => n.title === newsTitle).id;
-            const newsUrl = `/news-${newsId}.html`;
+            const newsUrl = `news-${newsId}.html`;
             const shareData = {
                 title: newsTitle,
                 url: newsUrl
@@ -432,34 +449,12 @@
                     index++;
                     const delays = [100, 150, 120, 180, 140, 160, 130, 170, 110, 190, 150, 200, 100];
                     const delay = delays[index % delays.length] || 150;
-                    timer = setTimeout(type, delay);
-                } else {
-                    setTimeout(() => {
-                        index = 0;
-                        container.textContent = "";
-                        type();
-                    }, 5000);
+                    timer = setTimeout(type, 150);
                 }
             }
             type();
         })();
-        
-        const observerOptions = {
-            threshold: 0.1
-        };
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.card').forEach(card => {
-            card.style.opacity = '0';
-            observer.observe(card);
-        });
     </script>
 </body>
 </html>
+
