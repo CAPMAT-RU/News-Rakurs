@@ -5,25 +5,185 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Технологический суверенитет за миллиарды рублей | Ракурс NEWS</title>
     <style>
-        :root { --bg: #ffffff; --card: #f9f9f9; --text: #1a1a1a; --accent: #ff9800; --meta: #666; }
-        [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #ff9800; --meta: #aaa; }
+    :root {
+        --bg: #ffffff;
+        --card: #f9f9f9;
+        --text: #1a1a1a;
+        --accent: #ff9800;
+        --meta: #666;
+        --quote-bg: rgba(255, 152, 0, 0.05);
+        --hr-color: #eee;
+    }
 
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; max-width: 800px; margin: 0 auto; line-height: 1.6; transition: background 0.3s; }
-        header { padding: 15px 0; border-bottom: 1px solid var(--accent); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-wrapper { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 20px; cursor: pointer; }
-        .logo-wrapper img { width: 30px; height: 30px; }
-        
-        h1 { margin: 0 0 20px; line-height: 1.2; font-size: 24px; }
-        img { width: 100%; height: auto; border-radius: 4px; margin-bottom: 20px; background: #333; }
-        p { margin-bottom: 20px; }
-        
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; flex-wrap: wrap; gap: 10px; }
-        .btn { text-decoration: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; font-weight: bold; border: 1px solid var(--accent); color: var(--text); background: var(--card); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; height: 32px; box-sizing: border-box; }
-        .btn:hover { background: var(--accent); color: #fff; }
-        
-        .theme-toggle { cursor: pointer; background: transparent; border: 1px solid var(--accent); color: var(--text); display: flex; align-items: center; justify-content: center; border-radius: 2px; transition: all 0.3s; height: 32px; width: 32px; padding: 0; }
-        .theme-toggle:hover { background: var(--accent); color: #000; }
-    </style>
+    [data-theme="dark"] {
+        --bg: #121212;
+        --card: #1e1e1e;
+        --text: #e0e0e0;
+        --accent: #ff9800;
+        --meta: #aaa;
+        --quote-bg: rgba(255, 152, 0, 0.1);
+        --hr-color: #333;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: sans-serif;
+        margin: 0;
+        padding: 20px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+        padding: 15px 0;
+        border-bottom: 1px solid var(--accent);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center; /* Выравнивает логотип и кнопку по одной линии */
+    }
+
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .logo-wrapper img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .theme-toggle {
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+        transition: all 0.3s;
+        height: 32px;
+        width: 32px;
+        padding: 0;
+    }
+
+    .theme-toggle:hover {
+        background: var(--accent);
+        color: #000;
+    }
+
+    h1 {
+        margin: 0 0 20px;
+        line-height: 1.2;
+        font-size: 24px;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        background: #333;
+        display: block;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+
+    article p:first-of-type {
+        font-size: 1.1rem;
+        font-weight: 500;
+        border-left: 3px solid var(--accent);
+        padding-left: 12px;
+        margin-top: 0;
+    }
+
+    blockquote {
+        margin: 25px 0;
+        padding: 16px 20px;
+        background: var(--quote-bg);
+        border-left: 4px solid var(--accent);
+        font-style: italic;
+        color: var(--meta);
+        position: relative;
+    }
+
+    blockquote::before {
+        content: "“";
+        font-size: 36px;
+        opacity: 0.2;
+        position: absolute;
+        top: 10px;
+        left: 8px;
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background: var(--hr-color);
+        margin: 30px 0;
+    }
+
+    ul, ol {
+        margin-bottom: 20px;
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 8px;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid var(--hr-color);
+    }
+
+    .btn {
+        text-decoration: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+        border: 1px solid var(--accent);
+        color: var(--text);
+        background: var(--card);
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        box-sizing: border-box;
+    }
+
+    .btn:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+    /* Исправляем глобальное правило для лого */
+.logo-wrapper img {
+    width: 30px !important; 
+    height: 30px !important;
+    display: block; /* Убирает лишние отступы снизу у картинки */
+    margin: 0;      /* Убирает лишние отступы */
+}
+
+</style>
 </head>
 <body>
     <header>
