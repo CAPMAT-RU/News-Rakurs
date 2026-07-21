@@ -133,7 +133,7 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 .cat-culture { background-color: #388e3c; }        /* Зеленый */
 .cat-science { background-color: #00897b; }        /* Бирюзовый (Наука) */
 .cat-style { background-color: #ec407a; }          /* Розовый (Стиль) */
-
+.cat-incidents { background-color: #b71c1c; } /* Тёмно-бордовый для Происшествий */
 /* Спорт, Шоу-бизнес */
 .cat-sports { background-color: #e91e63; }         /* Малиновый */
 .cat-showbiz { background-color: #fbc02d; }        /* Золотистый */
@@ -187,6 +187,7 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     <button class="category-btn" data-category="Общество">Общество</button>
     <button class="category-btn" data-category="Регионы">Регионы</button>
     <button class="category-btn" data-category="Государство">Государство</button>
+    <button class="category-btn" data-category="Происшествия">Происшествия</button>
     <button class="category-btn" data-category="Криминал">Криминал</button>
     <button class="category-btn" data-category="Политика">Политика</button>
     <button class="category-btn" data-category="Геополитика">Геополитика</button>
@@ -397,17 +398,49 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     });
     // Функция для получения класса цвета по названию категории
 function getCategoryClass(category) {
+    if (!category) return 'cat-default';
+    
     const cat = category.toLowerCase();
-    
+
+    // 1. СВО
     if (cat.includes('сво')) return 'cat-svo';
-    if (cat.includes('политика') || cat.includes('государство')) return 'cat-politics';
+
+    // 2. Политика / Государство / Власть
+    if (cat.includes('политика') || cat.includes('госдума') || cat.includes('президент') || cat.includes('власть')) return 'cat-politics';
+    if (cat.includes('государство')) return 'cat-state';
+    if (cat.includes('геополитика')) return 'cat-geopolitics';
+
+    // 3. Происшествия (НОВОЕ!)
+    if (cat.includes('происшествие') || cat.includes('чп') || cat.includes('авария')) return 'cat-incidents';
+
+    // 4. Общество
     if (cat.includes('общество')) return 'cat-society';
+
+    // 5. Регионы
+    if (cat.includes('регионы') || cat.includes('регион')) return 'cat-regions';
+
+    // 6. Криминал
     if (cat.includes('криминал')) return 'cat-crime';
-    if (cat.includes('культура') || cat.includes('наука')) return 'cat-culture';
+
+    // 7. Коррупция
+    if (cat.includes('коррупция')) return 'cat-corruption';
+
+    // 8. Культура
+    if (cat.includes('культура') || cat.includes('искусство')) return 'cat-culture';
+
+    // 9. Наука
+    if (cat.includes('наука') || cat.includes('технологии')) return 'cat-science';
+
+    // 10. Стиль
+    if (cat.includes('стиль') || cat.includes('мода')) return 'cat-style';
+
+    // 11. Спорт
     if (cat.includes('спорт')) return 'cat-sports';
-    if (cat.includes('шоу-бизнес')) return 'cat-showbiz';
-    
-    return 'cat-default'; // Если категория не подошла ни под одно правило
+
+    // 12. Шоу-бизнес
+    if (cat.includes('шоу-бизнес') || cat.includes('знаменитости')) return 'cat-showbiz';
+
+    return 'cat-default';
 }
 
     loadNews();
