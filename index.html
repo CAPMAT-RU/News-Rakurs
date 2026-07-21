@@ -100,9 +100,9 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
 .category-badge {
     position: absolute;
     bottom: 15px;       /* Отступ снизу */
-    left: 15px;         /* Отступ слева */
+    left: 0px;         /* Отступ слева */
     padding: 6px 12px;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
     color: white;
     text-transform: uppercase;
@@ -253,87 +253,76 @@ header { background: var(--card); padding: 15px 5px; display: flex; justify-cont
     }
     function renderNews(data, query = '') {
         const container = document.getElementById('news-container');
-        container.innerHTML = '';
-        // --- ГЛАВНАЯ НОВОСТЬ ---
-if (featuredNewsId && data.some(item => item.id === featuredNewsId)) {
-    const featuredNews = data.find(item => item.id === featuredNewsId);
-    if (featuredNews) {
-        // Генерируем HTML для бейджа
-        const hotBadge = featuredNews.isHot 
-            ? '<span class="hot-badge">ТОП</span>' 
-            : '';
-
-        // --- ДЛЯ ГЛАВНОЙ НОВОСТИ (внутри блока if (featuredNewsId ...)) ---
-const featuredCatClass = getCategoryClass(featuredNews.category);
-const featuredHTML = `
-    <div class="card" style="width: 100%;">
-        <div class="card-image-wrapper">
-            <img src="${featuredNews.image || '/images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy">
-            ${hotBadge} <!-- Твоя плашка "ТОП" -->
-            <!-- НОВАЯ ПЛАШКА КАТЕГОРИИ -->
-            <span class="category-badge ${featuredCatClass}">${featuredNews.category}</span>
-        </div>
+        container.innerHTML = ''; // Очищаем контейнер
         
-        <div class="meta-container">
-            <span class="meta-date">${featuredNews.date}</span>
-            <span class="meta-author">${featuredNews.author || ''}</span>
-        </div>
-        <h3>${featuredNews.title}</h3>
-        <div class="desc">${featuredNews.description || ''}</div>
-    </div>`;
-// ... остальной код главной новости ...
-
-
-// --- ДЛЯ ОБЫЧНЫХ НОВОСТЕЙ (внутри map) ---
-const catClass = getCategoryClass(item.category); // Получаем класс цвета
-
-return `<div class="card" onclick="window.location.href='/${item.id}.html'">
-    <div class="card-image-wrapper">
-        <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
-        ${hotBadge}
-        <!-- НОВАЯ ПЛАШКА КАТЕГОРИИ -->
-        <span class="category-badge ${catClass}">${item.category}</span>
-    </div>
-    
-    <div class="meta-container">
-        <span class="meta-date">${item.date}</span>
-        <span class="meta-author">${item.author || ''}</span>
-    </div>
-    <h3>${title}</h3>
-    <div class="desc">${item.description || ''}</div>
-</div>`;
-        document.getElementById('main-news').innerHTML = featuredHTML;
-        document.getElementById('main-news').style.display = 'block';
-    }
-} else {
-    document.getElementById('main-news').style.display = 'none';
-}
-        const filteredNews = data.filter(item => item.id !== featuredNewsId);
-        container.innerHTML += filteredNews.map(item => {
-    // Генерируем HTML для бейджа
-    const hotBadge = item.isHot 
-        ? '<span class="hot-badge">ТОП</span>' 
-        : '';
-    
-    let title = query ? item.title.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>') : item.title;
-    
-    return `<div class="card" onclick="window.location.href='/${item.id}.html'">
-                <!-- ОБЁРТКА ДЛЯ КАРТИНКИ + БЕЙДЖ -->
-                <div class="card-image-wrapper">
-                    <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
-                    ${hotBadge}
-                </div>
-                <!-- КОНЕЦ ОБЁРТКИ -->
+        // --- 1. ГЛАВНАЯ НОВОСТЬ ---
+        if (featuredNewsId && data.some(item => item.id === featuredNewsId)) {
+            const featuredNews = data.find(item => item.id === featuredNewsId);
+            if (featuredNews) {
+                const hotBadge = featuredNews.isHot 
+                    ? '<span class="hot-badge">ТОП</span>' 
+                    : '';
                 
-                <div class="meta-container">
-                    <span class="meta-date">${item.category} • ${item.date}</span>
-                    <span class="meta-author">${item.author || ''}</span>
-                </div>
-                <h3>${title}</h3>
-                <div class="desc">${item.description || ''}</div>
-            </div>`;
-}).join('');
+                // Получаем класс цвета для главной новости
+                const featuredCatClass = getCategoryClass(featuredNews.category);
 
+                const featuredHTML = `
+                    <div class="card" style="width: 100%;">
+                        <div class="card-image-wrapper">
+                            <img src="${featuredNews.image || '/images/placeholder.jpg'}" alt="${featuredNews.title}" class="card-image" loading="lazy">
+                            ${hotBadge}
+                            <!-- ПЛАШКА КАТЕГОРИИ (работает!) -->
+                            <span class="category-badge ${featuredCatClass}">${featuredNews.category}</span>
+                        </div>
+                        
+                        <div class="meta-container">
+                            <!-- ТОЛЬКО ДАТА, БЕЗ КАТЕГОРИИ -->
+                            <span class="meta-date">${featuredNews.date}</span>
+                            <span class="meta-author">${featuredNews.author || ''}</span>
+                        </div>
+                        <h3>${featuredNews.title}</h3>
+                        <div class="desc">${featuredNews.description || ''}</div>
+                    </div>`;
+                
+                document.getElementById('main-news').innerHTML = featuredHTML;
+                document.getElementById('main-news').style.display = 'block';
+            }
+        } else {
+            document.getElementById('main-news').style.display = 'none';
+        }
+
+        // --- 2. ОБЫЧНЫЕ НОВОСТИ (СЕТКА) ---
+        // Фильтруем новости, убирая главную из списка
+        const filteredNews = data.filter(item => item.id !== featuredNewsId);
+        
+        container.innerHTML = filteredNews.map(item => {
+            const hotBadge = item.isHot 
+                ? '<span class="hot-badge">ТОП</span>' 
+                : '';
+            
+            // Получаем класс цвета ДЛЯ КАЖДОЙ новости в сетке
+            const catClass = getCategoryClass(item.category); 
+            
+            let title = query ? item.title.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>') : item.title;
+            
+            return `
+                <div class="card" onclick="window.location.href='/${item.id}.html'">
+                    <div class="card-image-wrapper">
+                        <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
+                        ${hotBadge}
+                        <!-- ПЛАШКА КАТЕГОРИИ (теперь она есть и здесь!) -->
+                        <span class="category-badge ${catClass}">${item.category}</span>
+                    </div>
+                    
+                    <div class="meta-container">
+                        <!-- ТОЛЬКО ДАТА -->
+                        <span class="meta-date">${item.date}</span>
+                        <span class="meta-author">${item.author || ''}</span>
+                    </div>
+                    <h3>${title}</h3>
+                    <div class="desc">${item.description || ''}</div>
+                </div>`;
+        }).join('');
     }
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('search-results');
