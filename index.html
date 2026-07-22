@@ -106,6 +106,7 @@
         }
     }
 
+    /* Обновленный блок категорий: горизонтальная прокрутка, подчеркивание, без бургер-меню */
     .categories-wrapper {
         padding: 15px 20px;
         overflow-x: auto;
@@ -113,11 +114,11 @@
         border-bottom: 1px solid var(--accent);
         display: flex;
         gap: 20px;
-        scrollbar-width: none;
+        scrollbar-width: none; /* Firefox */
     }
 
     .categories-wrapper::-webkit-scrollbar {
-        display: none;
+        display: none; /* Chrome, Safari, Opera */
     }
 
     .category-btn {
@@ -129,9 +130,31 @@
         font-size: 13px;
         font-weight: bold;
         flex-shrink: 0;
+        position: relative;
+        padding-bottom: 8px; /* Место под подчеркивание */
+        transition: color 0.2s;
+    }
+
+    .category-btn::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background-color: var(--accent);
+        transition: width 0.2s ease-in-out;
     }
 
     .category-btn.active {
+        color: var(--accent);
+    }
+
+    .category-btn.active::after {
+        width: 100%;
+    }
+
+    .category-btn:hover:not(.active) {
         color: var(--accent);
     }
 
@@ -332,70 +355,11 @@
     }
 
     .mobile-menu-button {
-        display: none;
-        cursor: pointer;
-        background: transparent;
-        border: 1px solid var(--accent);
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 2px;
-        transition: all 0.3s;
-        height: 32px;
-        width: 32px;
-        padding: 0;
-        margin-left: 10px;
-    }
-
-    .mobile-menu-button:hover {
-        background: var(--accent);
-        color: #000;
-    }
-
-    .mobile-menu-button svg {
-        width: 20px;
-        height: 20px;
+        display: none; /* Удалено бургер-меню */
     }
 
     .mobile-menu {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200px;
-        height: 100%;
-        background: var(--mobile-menu-bg);
-        color: var(--mobile-menu-text);
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 1100;
-        padding: 20px;
-        box-sizing: border-box;
-        border-right: 1px solid var(--mobile-menu-border);
-        overflow-y: auto;
-    }
-
-    .mobile-menu.open {
-        transform: translateX(0);
-    }
-
-    .mobile-menu .category-btn {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 12px 0;
-        font-size: 16px;
-        border-bottom: 1px solid var(--mobile-menu-border);
-        color: var(--mobile-menu-text);
-        cursor: pointer;
-    }
-
-    .mobile-menu .category-btn:last-child {
-        border-bottom: none;
-    }
-
-    .mobile-menu .category-btn.active {
-        color: var(--accent);
+        display: none; /* Полностью удалено мобильное меню */
     }
 
     .page-title-wrapper {
@@ -419,10 +383,8 @@
     }
 
     @media (max-width: 768px) {
+        /* Категории остаются видимыми и прокручиваемыми на мобильных */
         .categories-wrapper {
-            display: none;
-        }
-        .mobile-menu-button {
             display: flex;
         }
         .page-title-wrapper {
@@ -563,66 +525,37 @@
     .cat-default {
         background-color: #555;
     }
-    .menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1099; /* Чуть ниже меню (1100), но выше всего остального */
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    pointer-events: auto; /* Перехватывает клики */
-}
-
-.menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 </style>
 </head>
 <body>
 <h1>Актуальные новости Ракурс NEWS</h1>
 <div id="progress-bar"></div>
 <header>
-<div class="logo-wrapper"><img src="/images/logo.png" alt="Logo"><span>Ракурс NEWS</span></div>
-<div class="controls-wrapper">
-<div class="search-wrapper">
-<input type="text" id="searchInput" placeholder="Поиск...">
-<div id="search-results"></div>
+    <div class="logo-wrapper">
+        <img src="/images/logo.png" alt="Logo">
+        <span>Ракурс NEWS</span>
+    </div>
+    <div class="controls-wrapper">
+        <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="Поиск...">
+    <div id="search-results"></div>
 </div>
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Сменить тему">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="12" cy="12" r="5"></circle>
-  <!-- 8 лучей (добавлены 2 новых) -->
-  <line x1="12" y1="1" x2="12" y2="3"></line>
-  <line x1="12" y1="21" x2="12" y2="23"></line>
-  <line x1="1" y1="12" x2="3" y2="12"></line>
-  <line x1="21" y1="12" x2="23" y2="12"></line>
-  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-</svg>
-</button>
-
-<button class="mobile-menu-button" id="mobileMenuButton" aria-label="Открыть меню">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
     </svg>
 </button>
 </div>
 </header>
-<div class="page-title-wrapper">
-    <div class="page-title-indicator"></div>
-    <h3 class="page-title">Все новости</h3>
-</div>
-<div class="categories-wrapper" id="menu">
+<div class="categories-wrapper" id="menu" style="position: sticky; top: 60px; z-index: 1001; background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
     <button class="category-btn active" data-category="all">Все новости</button>
     <button class="category-btn" data-category="СВО">СВО</button>
     <button class="category-btn" data-category="Общество">Общество</button>
@@ -639,25 +572,6 @@
     <button class="category-btn" data-category="Стиль">Стиль</button>
     <button class="category-btn" data-category="Культура">Культура</button>
 </div>
-<div class="mobile-menu" id="mobileMenu">
-<div id="menuOverlay" class="menu-overlay"></div>
-    <button class="category-btn active" data-category="all">Все новости</button>
-    <button class="category-btn" data-category="СВО">СВО</button>
-    <button class="category-btn" data-category="Общество">Общество</button>
-    <button class="category-btn" data-category="Регионы">Регионы</button>
-    <button class="category-btn" data-category="Государство">Государство</button>
-    <button class="category-btn" data-category="Происшествия">Происшествия</button>
-    <button class="category-btn" data-category="Криминал">Криминал</button>
-    <button class="category-btn" data-category="Политика">Политика</button>
-    <button class="category-btn" data-category="Геополитика">Геополитика</button>
-    <button class="category-btn" data-category="Коррупция">Коррупция</button>
-    <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
-    <button class="category-btn" data-category="Спорт">Спорт</button>
-    <button class="category-btn" data-category="Наука">Наука</button>
-    <button class="category-btn" data-category="Стиль">Стиль</button>
-    <button class="category-btn" data-category="Культура">Культура</button>
-</div>
-
 <div id="top-scroll-indicator" style="
     position: fixed;
     top: 0;
@@ -696,7 +610,33 @@
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+        updateCategoriesBackground(newTheme);
     }
+
+    function updateCategoriesBackground(theme) {
+        const menu = document.getElementById('menu');
+        if (!menu) return;
+
+        if (theme === 'light') {
+            menu.style.background = 'rgba(255, 255, 255, 0.9)';
+            const buttons = menu.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                btn.style.color = '#1a1a1a';
+                btn.classList.add('light-theme-btn');
+                btn.classList.remove('dark-theme-btn');
+            });
+        } else {
+            menu.style.background = 'rgba(30, 30, 30, 0.8)';
+            const buttons = menu.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                btn.style.color = '#ffffff';
+                btn.classList.add('dark-theme-btn');
+                btn.classList.remove('light-theme-btn');
+            });
+        }
+    }
+
+    updateCategoriesBackground(savedTheme);
 
     let allNews = [];
     let featuredNewsId = null;
@@ -813,55 +753,17 @@
         window.location.href = `/${newsId}.html`;
     }
 
-    // --- Логика мобильного меню и затемнения (NEW) ---
     const menuElement = document.getElementById('menu');
-    const mobileMenuElement = document.getElementById('mobileMenu');
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'menu-overlay';
-    document.body.appendChild(overlay);
-
-    if (mobileMenuButton && mobileMenuElement) {
-        mobileMenuButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mobileMenuElement.classList.toggle('open');
-            overlay.classList.toggle('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            mobileMenuElement.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-    }
-    // -------------------------------------------------
-
-    const pageTitleElement = document.querySelector('.page-title');
 
     function handleCategoryClick(e) {
         if (!e.target.classList.contains('category-btn')) return;
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         const cat = e.target.dataset.category;
-        pageTitleElement.textContent = cat === 'all' ? 'Все новости' : cat;
         renderNews(cat === 'all' ? allNews : allNews.filter(n => n.category === cat));
-        
-        if (mobileMenuElement && mobileMenuElement.classList.contains('open')) {
-            mobileMenuElement.classList.remove('open');
-            overlay.classList.remove('active');
-        }
     }
 
     if (menuElement) menuElement.addEventListener('click', handleCategoryClick);
-    if (mobileMenuElement) mobileMenuElement.addEventListener('click', handleCategoryClick);
-
-    // Старая логика закрытия по клику вне (оставляем как запасной вариант, но основной — через overlay)
-    document.addEventListener('click', (e) => {
-        if (mobileMenuElement && mobileMenuElement.classList.contains('open') && !mobileMenuElement.contains(e.target) && !mobileMenuButton.contains(e.target)) {
-            mobileMenuElement.classList.remove('open');
-            overlay.classList.remove('active');
-        }
-    });
 
     function getCategoryClass(category) {
         if (!category) return 'cat-default';
@@ -956,7 +858,7 @@
     }, observerOptions);
 
     document.querySelectorAll('.card').forEach(card => {
-        observer.observe(card);
+                observer.observe(card);
     });
 </script>
 </body>
