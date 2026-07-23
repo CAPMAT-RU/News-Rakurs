@@ -826,3 +826,40 @@ function scrollToTop() {
 
 /* Если категория не найдена или пустая - нейтральный цвет */
 .category-other { background-color: #95a5a6; }
+.categories-wrapper {
+  overflow-x: auto;           /* Включает горизонтальную прокрутку */
+  scrollbar-width: thin;      /* Тонкий скроллбар в Firefox */
+  -ms-overflow-style: none;   /* Убирает стандартный скролл в IE/Edge */
+  padding-bottom: 4px;        /* Отступ снизу, чтобы скроллбар не прилипал к контенту */
+}
+
+/* Стили для скроллбара (работает в Chrome, Safari, Edge) */
+.categories-wrapper::-webkit-scrollbar {
+  height: 6px;                /* Высота полоски скролла */
+}
+.categories-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.categories-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.categories {
+  display: flex;
+  gap: 8px;                   /* Расстояние между кнопками категорий */
+  padding: 4px 0;
+  /* Важно: не ставь flex-wrap: wrap, иначе они перенесутся на новую строку */
+}
+
+.category {
+  white-space: nowrap;        /* Запрещает перенос текста внутри кнопки */
+  font-size: 14px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #333;
+  background: #f9f9f9;
+  border-radius: 6px;
+  display: block;             /* Чтобы кликабельная область была вся кнопка */
+}
