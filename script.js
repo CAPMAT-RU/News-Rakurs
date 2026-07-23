@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            allNewsData = data.items || []; // Убедимся, что allNewsData - это массив
+            allNewsData = data.items || []; 
 
             // Показываем главную новость
             if (data.featuredNewsId && allNewsData.length > 0) {
@@ -34,23 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // Показываем список новостей
             displayNews(allNewsData);
 
-            // Скрываем лоадер ТОЛЬКО после успеха
-            if (loader) { // Проверка перед использованием loader
+            // Скрываем лоадер
+            if (loader) {
                 loader.style.display = 'none'; 
             }
         })
         .catch(error => {
             console.error('Ошибка загрузки новостей:', error);
-            // Проверяем, существует ли loader, прежде чем использовать его
             if (loader) {
                 loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
-                loader.style.display = 'none'; // Скрываем лоадер, даже если произошла ошибка
+                loader.style.display = 'block'; 
             }
         });
 
     // --- ФУНКЦИИ ОТРИСОВКИ ---
     function displayFeaturedNews(newsItem) {
-        // Проверяем, существует ли контейнер для главной новости
         if (featuredNewsContainer) {
             featuredNewsContainer.style.display = 'block';
             featuredNewsContainer.innerHTML = `
@@ -64,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            // Добавляем обработчик события только если элемент найден
             const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
             if (readMoreFeatured) {
                 readMoreFeatured.addEventListener('click', (e) => {
@@ -76,23 +73,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayNews(newsArray) {
-        // Проверяем, существует ли контейнер для новостей
         if (!newsContainer) return;
 
-        newsContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых новостей
+        newsContainer.innerHTML = ''; 
         if (!newsArray || newsArray.length === 0) {
             newsContainer.innerHTML = '<p>Новостей не найдено.</p>';
             return;
         }
 
         newsArray.forEach(newsItem => {
-            // Форматируем дату, если она есть
             let formattedDate = '';
             if (newsItem.date) {
                 try {
                     formattedDate = new Date(newsItem.date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
                 } catch (e) {
-                    formattedDate = newsItem.date; // Если формат даты некорректный, оставляем как есть
+                    formattedDate = newsItem.date; 
                 }
             }
             
@@ -139,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             displayNews(filtered);
         } else if (query.length === 0) {
-            filterNews(); // Возвращаемся к фильтрации по текущей категории, если поиск пуст
+            filterNews(); 
         }
     });
 
@@ -147,42 +142,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleReadMoreClick(newsId) {
         const item = allNewsData.find(i => i.id === newsId);
         if (item) {
-            // alert(`Вы кликнули: ${item.title}`); // Выводит сообщение с заголовком новости (закомментировано)
-            
-            // Переход на отдельную страницу статьи (раскомментируйте, если нужно)
-            // Убедитесь, что имена файлов соответствуют ID новостей (например, news-16.html для id: "news-16")
             window.location.href = `${newsId}.html`;
         }
     }
 
-    // Обработчик событий для кнопок "Читать далее" внутри newsContainer
-    if (newsContainer) { // Проверка, существует ли newsContainer
+    if (newsContainer) { 
         newsContainer.addEventListener('click', (event) => {
             if (event.target.classList.contains('read-more')) {
-                event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+                event.preventDefault(); 
                 handleReadMoreClick(event.target.getAttribute('data-id'));
             }
         });
     }
 
-    // --- ПРОКРУТКА И ПРОГРЕСС-БАР ---
-    window.onscroll = function() {
-        scrollFunction();
+    // --- ПРОКРУТКА И ПРОГРЕСС-БАР (ИСПРАВЛЕНО) ---
+    
+    // 1. Логика прогресс-бара (оставлена как была)
+    window.addEventListener('scroll', () => {
         progressBarScroll();
-    };
-
-    function scrollFunction() {
-        const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        // Показываем кнопку "наверх", если прокрутка больше 20px
-        if (scrollToTopButton) {
-            scrollToTopButton.style.display = (scrollTop > 20) ? "block" : "none";
-        }
-    }
-
-    function scrollToTop() {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    }
+    });
 
     function progressBarScroll() {
         const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -192,7 +170,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
+    // 2. Логика кнопки "Наверх" (ПОЛНОСТЬЮ ПЕРЕПИСАНА)
+    if (scrollToTopButton) {
+        // Показываем/скрываем кнопку при скролле
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollToTopButton.classList.add('visible');
+            } else {
+                scrollToTopButton.classList.remove('visible');
+            }
+        });
+
+        // Плавная прокрутка при клике
+        scrollToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Плавная анимация
+            });
+        });
+    }
+
+    // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
     const themeToggleBtn = document.querySelector('.theme-toggle');
     
     if (themeToggleBtn) {
@@ -207,11 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Проверка сохраненной темы при старте
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
     } else {
-        // Убедимся, что класс dark-theme удален, если тема не темная
         document.body.classList.remove('dark-theme'); 
     }
 });
