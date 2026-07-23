@@ -790,3 +790,39 @@ function scrollToTop() {
 
 /* Если категория неизвестна, будет нейтральная */
 .category-other { background-color: #95a5a6; }
+/* 1. Обязательно: делаем карточку "контейнером" для плашки */
+.news-card {
+    position: relative; /* Без этого плашка улетит в угол экрана */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 2. Стили самой плашки (яркие, непрозрачные) */
+.news-category-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff; /* Белый текст */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Легкая тень для объема */
+    z-index: 10;
+    /* Нет прозрачности, сплошной цвет берется из следующего блока */
+}
+
+/* 3. Яркие цвета для категорий (сплошные, без прозрачности) */
+.category-sport { background-color: #ff4757; }       /* Красный */
+.category-politics { background-color: #2f3542; }   /* Темно-серый */
+.category-economy { background-color: #1e90ff; }    /* Голубой */
+.category-tech { background-color: #ffa502; }      /* Оранжевый */
+.category-culture { background-color: #a29bfe; }   /* Фиолетовый */
+.category-science { background-color: #00d2d3; }  /* Бирюзовый */
+.category-world { background-color: #57606f; }     /* Серый */
+
+/* Если категория не найдена или пустая - нейтральный цвет */
+.category-other { background-color: #95a5a6; }
