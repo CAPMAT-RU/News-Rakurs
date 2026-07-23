@@ -12,60 +12,84 @@ document.addEventListener('DOMContentLoaded', () => {
     let allNewsData = [];
     let currentCategory = 'all';
 
-    // --- 1. ЗАГРУЗКА НОВОСТЕЙ (НЕ ТРОГАТЬ) ---
+    // --- 1. ЗАГРУЗКА НОВОСТЕЙ ---
     fetch('news.json')
         .then(response => {
-            if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
             return response.json();
         })
         .then(data => {
-            allNewsData = data.items;
-            
+            allNewsData = data.items || []; // Убедимся, что allNewsData - это массив
+
             // Показываем главную новость
             if (data.featuredNewsId && allNewsData.length > 0) {
                 const featuredNews = allNewsData.find(item => item.id === data.featuredNewsId);
-                if (featuredNews) displayFeaturedNews(featuredNews);
+                if (featuredNews) {
+                    displayFeaturedNews(featuredNews);
+                }
             }
 
             // Показываем список новостей
             displayNews(allNewsData);
-            
+
             loader.style.display = 'none'; // Скрываем лоадер ТОЛЬКО после успеха
         })
         .catch(error => {
             console.error('Ошибка загрузки новостей:', error);
             loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
+            // Если произошла ошибка, все равно скрываем лоадер, чтобы не висел вечно
+            loader.style.display = 'none'; 
         });
 
     // --- ФУНКЦИИ ОТРИСОВКИ ---
     function displayFeaturedNews(newsItem) {
-        featuredNewsContainer.style.display = 'block';
-        featuredNewsContainer.innerHTML = `
-            <div class="featured-news-card">
-                <img src="${newsItem.image}" alt="${newsItem.title}" class="featured-news-image">
-                <div class="featured-news-content">
-                    <h2 class="featured-news-title">${newsItem.title}</h2>
-                    <p class="featured-news-date">${newsItem.date}</p>
-                    <p class="featured-news-description">${newsItem.description}</p>
-                    <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
+        // Проверяем, существует ли контейнер для главной новости
+        if (featuredNewsContainer) {
+            featuredNewsContainer.style.display = 'block';
+            featuredNewsContainer.innerHTML = `
+                <div class="featured-news-card">
+                    <img src="${newsItem.image}" alt="${newsItem.title}" class="featured-news-image">
+                    <div class="featured-news-content">
+                        <h2 class="featured-news-title">${newsItem.title}</h2>
+                        <p class="featured-news-date">${newsItem.date}</p>
+                        <p class="featured-news-description">${newsItem.description}</p>
+                        <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
+                    </div>
                 </div>
-            </div>
-        `;
-        featuredNewsContainer.querySelector('.read-more-featured').addEventListener('click', (e) => {
-            e.preventDefault();
-            handleReadMoreClick(e.target.getAttribute('data-id'));
-        });
+            `;
+            // Добавляем обработчик события только если элемент найден
+            const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
+            if (readMoreFeatured) {
+                readMoreFeatured.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleReadMoreClick(e.target.getAttribute('data-id'));
+                });
+            }
+        }
     }
 
     function displayNews(newsArray) {
-        newsContainer.innerHTML = '';
+        // Проверяем, существует ли контейнер для новостей
+        if (!newsContainer) return;
+
+        newsContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых новостей
         if (!newsArray || newsArray.length === 0) {
             newsContainer.innerHTML = '<p>Новостей не найдено.</p>';
             return;
         }
 
         newsArray.forEach(newsItem => {
-            const formattedDate = new Date(newsItem.date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+            // Форматируем дату, если она есть
+            let formattedDate = '';
+            if (newsItem.date) {
+                try {
+                    formattedDate = new Date(newsItem.date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+                } catch (e) {
+                    formattedDate = newsItem.date; // Если формат даты некорректный, оставляем как есть
+                }
+            }
             
             const newsElement = document.createElement('div');
             newsElement.classList.add('news-item');
@@ -110,20 +134,28 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             displayNews(filtered);
         } else if (query.length === 0) {
-            filterNews();
+            filterNews(); // Возвращаемся к фильтрации по текущей категории, если поиск пуст
         }
     });
 
-// function handleReadMoreClick(newsId) {
-//     // Пока ничего не делаем, чтобы исключить влияние кода
-// }
+    // --- ОБРАБОТКА КЛИКА НА "ЧИТАТЬ ДАЛЕЕ" ---
+    // Эта функция теперь просто ищет новость и выводит ее заголовок в alert.
+    // Если нужно переходить на страницу статьи, здесь нужно добавить window.location.href = ...
+    function handleReadMoreClick(newsId) {
         const item = allNewsData.find(i => i.id === newsId);
-        if (item) alert(`Вы кликнули: ${item.title}`);
+        if (item) {
+            // alert(`Вы кликнули: ${item.title}`); // Выводит сообщение с заголовком новости
+            
+            // Если нужно переходить на отдельную страницу статьи (например, news-16.html)
+            // Раскомментируйте следующую строку и убедитесь, что имена файлов соответствуют ID новостей
+            // window.location.href = `news-${newsId}.html`; 
+        }
     }
 
+    // Обработчик событий для кнопок "Читать далее" внутри newsContainer
     newsContainer.addEventListener('click', (event) => {
         if (event.target.classList.contains('read-more')) {
-            event.preventDefault();
+            event.preventDefault(); // Предотвращаем стандартное поведение ссылки
             handleReadMoreClick(event.target.getAttribute('data-id'));
         }
     });
@@ -136,7 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function scrollFunction() {
         const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        scrollToTopButton.style.display = (scrollTop > 20) ? "block" : "none";
+        // Показываем кнопку "наверх", если прокрутка больше 20px
+        if (scrollToTopButton) {
+            scrollToTopButton.style.display = (scrollTop > 20) ? "block" : "none";
+        }
     }
 
     function scrollToTop() {
@@ -147,12 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function progressBarScroll() {
         const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        if (height > 0) {
+        if (height > 0 && progressBar) {
             progressBar.style.width = ((winScroll / height) * 100) + '%';
         }
     }
 
-    // --- 2. ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (ИСПРАВЛЕНО) ---
+    // --- 2. ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
     const themeToggleBtn = document.querySelector('.theme-toggle');
     
     if (themeToggleBtn) {
@@ -171,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
     } else {
-        document.body.classList.remove('dark-theme'); // Гарантированно убираем, если была
+        // Убедимся, что класс dark-theme удален, если тема не темная
+        document.body.classList.remove('dark-theme'); 
     }
 });
