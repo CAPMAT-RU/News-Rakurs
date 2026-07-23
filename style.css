@@ -7,10 +7,10 @@
     --mobile-menu-bg: var(--card);
     --mobile-menu-text: var(--text);
     --mobile-menu-border: var(--accent);
-    --footer-bg: rgba(255, 255, 255, 0.3);
+    --footer-bg: rgba(255, 255, 255, 0.3); /* Значение для светлой темы */
 }
 
-body.dark-theme { /* <-- Вот это изменение */
+body.dark-theme { /* Селектор для темной темы */
     --bg: #121212;
     --card: #1e1e1e;
     --text: #e0e0e0;
@@ -19,7 +19,7 @@ body.dark-theme { /* <-- Вот это изменение */
     --mobile-menu-bg: #000000;
     --mobile-menu-text: var(--text);
     --mobile-menu-border: var(--accent);
-    --footer-bg: rgba(18, 18, 18, 0.3);
+    --footer-bg: rgba(18, 18, 18, 0.3); /* Значение для темной темы */
 }
 
 body {
@@ -322,7 +322,7 @@ header {
     right: 0;
     height: auto;
     min-height: 60px;
-    background: var(--footer-bg);
+    background: var(--footer-bg); /* Теперь эта переменная будет меняться */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid var(--accent);
@@ -716,4 +716,3 @@ header {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-*/
