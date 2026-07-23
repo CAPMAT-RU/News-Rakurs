@@ -198,24 +198,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Переключение темы (пример, требует реализации в CSS) ---
-    const themeToggleBtn = document.querySelector('.theme-toggle');
-    themeToggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        // Здесь можно добавить сохранение темы в localStorage
-        if (document.body.classList.contains('dark-theme')) {
-            localStorage.setItem('theme', 'dark');
-        } else {
-            localStorage.setItem('theme', 'light');
-        }
-    });
+    // ... (предыдущий код с fetch и категориями оставляем как есть) ...
 
-    // --- Инициализация при загрузке ---
-    // Проверяем сохраненную тему при загрузке
+    // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ---
+    
+    const themeToggleBtn = document.querySelector('.theme-toggle');
+    
+    if (themeToggleBtn) { // Проверка, чтобы скрипт не упал, если кнопки нет
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            
+            // Сохраняем состояние
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme'); // Удаляем запись, значит тема светлая
+            }
+        });
+    }
+
+    // --- ИНИЦИАЛИЗАЦИЯ ТЕМЫ ПРИ ЗАГРУЗКЕ ---
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
     } else {
-        // По умолчанию или если тема не сохранена, применяем светлую тему
-        document.body.classList.add('light-theme'); // Предполагая, что у вас есть класс light-theme или стили по умолчанию
+      
+        document.body.classList.remove('dark-theme'); 
     }
-});
