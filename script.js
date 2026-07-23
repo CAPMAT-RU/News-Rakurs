@@ -34,13 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Показываем список новостей
             displayNews(allNewsData);
 
-            loader.style.display = 'none'; // Скрываем лоадер ТОЛЬКО после успеха
+            // Скрываем лоадер ТОЛЬКО после успеха
+            if (loader) { // Проверка перед использованием loader
+                loader.style.display = 'none'; 
+            }
         })
         .catch(error => {
             console.error('Ошибка загрузки новостей:', error);
-            loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
-            // Если произошла ошибка, все равно скрываем лоадер, чтобы не висел вечно
-            loader.style.display = 'none'; 
+            // Проверяем, существует ли loader, прежде чем использовать его
+            if (loader) {
+                loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
+                loader.style.display = 'none'; // Скрываем лоадер, даже если произошла ошибка
+            }
         });
 
     // --- ФУНКЦИИ ОТРИСОВКИ ---
@@ -139,26 +144,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- ОБРАБОТКА КЛИКА НА "ЧИТАТЬ ДАЛЕЕ" ---
-    // Эта функция теперь просто ищет новость и выводит ее заголовок в alert.
-    // Если нужно переходить на страницу статьи, здесь нужно добавить window.location.href = ...
     function handleReadMoreClick(newsId) {
         const item = allNewsData.find(i => i.id === newsId);
         if (item) {
-            // alert(`Вы кликнули: ${item.title}`); // Выводит сообщение с заголовком новости
+            // alert(`Вы кликнули: ${item.title}`); // Выводит сообщение с заголовком новости (закомментировано)
             
-            // Если нужно переходить на отдельную страницу статьи (например, news-16.html)
-            // Раскомментируйте следующую строку и убедитесь, что имена файлов соответствуют ID новостей
-             window.location.href = `news-${newsId}.html`; 
+            // Переход на отдельную страницу статьи (раскомментируйте, если нужно)
+            // Убедитесь, что имена файлов соответствуют ID новостей (например, news-16.html для id: "news-16")
+            window.location.href = `news-${newsId}.html`; 
         }
     }
 
     // Обработчик событий для кнопок "Читать далее" внутри newsContainer
-    newsContainer.addEventListener('click', (event) => {
-        if (event.target.classList.contains('read-more')) {
-            event.preventDefault(); // Предотвращаем стандартное поведение ссылки
-            handleReadMoreClick(event.target.getAttribute('data-id'));
-        }
-    });
+    if (newsContainer) { // Проверка, существует ли newsContainer
+        newsContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('read-more')) {
+                event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+                handleReadMoreClick(event.target.getAttribute('data-id'));
+            }
+        });
+    }
 
     // --- ПРОКРУТКА И ПРОГРЕСС-БАР ---
     window.onscroll = function() {
