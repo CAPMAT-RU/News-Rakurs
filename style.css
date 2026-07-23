@@ -877,3 +877,59 @@ function scrollToTop() {
         border-radius: 2px;
     }
 }
+/* --- ГАРАНТИРОВАННОЕ РЕШЕНИЕ ДЛЯ КАТЕГОРИЙ --- */
+
+/* Контейнер с кнопками: включаем перенос строк */
+.categories-wrapper#menu {
+    display: flex !important;
+    flex-wrap: wrap !important;       /* ГЛАВНОЕ: разрешает перенос на новую строку */
+    gap: 6px !important;             /* Компактный отступ между кнопками */
+    justify-content: flex-start;     /* Выравнивание по левому краю */
+    padding: 4px 0 !important;
+}
+
+/* Сами кнопки: делаем их компактными */
+.category-btn {
+    padding: 5px 10px !important;    /* Уменьшили внутренние отступы */
+    font-size: 13px !important;      /* Чуть меньше шрифт для компактности */
+    line-height: 1.2;                /* Плотный текст */
+    white-space: nowrap !important;  /* Текст внутри кнопки не переносится */
+    min-width: auto !important;      /* Убираем возможную фиксированную ширину */
+    max-width: fit-content;          /* Кнопка ровно по тексту */
+    cursor: pointer;
+}
+
+/* Панель-обёртка: убираем горизонтальный скролл, высота становится автоматической */
+.categories-panel {
+    overflow-x: visible !important;  /* ОТКЛЮЧАЕМ скролл (это критично!) */
+    overflow-y: visible !important;
+    height: auto !important;         /* Высота подстраивается под количество строк */
+    padding: 2px 0 !important;
+    width: 100% !important;
+}
+
+/* АДАПТИВНОСТЬ: на мобильных (до 900px) возвращаем горизонтальный скролл */
+@media (max-width: 900px) {
+    .categories-wrapper#menu {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important; /* В одну строку */
+        overflow-x: auto !important;  /* Включаем скролл */
+        padding-right: 20px !important;
+        justify-content: flex-start;
+    }
+
+    .categories-panel {
+        height: 42px !important;      /* Фиксированная высота для скролла */
+        overflow-x: auto !important;
+        padding: 0 10px !important;
+    }
+
+    /* Скрываем полосу прокрутки для красоты (Chrome, Safari, Edge) */
+    .categories-panel::-webkit-scrollbar {
+        height: 6px;
+    }
+    .categories-panel::-webkit-scrollbar-thumb {
+        background: rgba(128, 128, 128, 0.4);
+        border-radius: 3px;
+    }
+}
