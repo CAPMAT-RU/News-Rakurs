@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="featured-news-content">
                     <h2 class="featured-news-title">${newsItem.title}</h2>
                     ${dateText || authorText ? `
-                        <div class="news-meta">
+                        <div class="news-meta featured-meta">
                             ${dateText ? `<span class="meta-date">${dateText}</span>` : ''}
                             ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
                         </div>
@@ -227,9 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (scrollToTopButton) {
             if (window.scrollY > 300) {
-                scrollToTopButton.classList.add('visible');
+                scrollToTopButton.classList.remove('hidden');
             } else {
-                scrollToTopButton.classList.remove('visible');
+                scrollToTopButton.classList.add('hidden');
             }
         }
     });
@@ -275,31 +275,3 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('dark-theme'); 
     }
 });
-
-// --- СКРОЛЛ КАТЕГОРИЙ КОЛЕСИКОМ МЫШКИ ---
-const categoriesPanel = document.querySelector('.categories-panel');
-
-if (categoriesPanel) {
-    categoriesPanel.addEventListener('wheel', (event) => {
-        if (event.target.closest('.categories-panel')) {
-            event.preventDefault();
-            
-            const scrollAmount = event.deltaY;
-            const currentScroll = categoriesPanel.scrollLeft;
-            const maxScroll = categoriesPanel.scrollWidth - categoriesPanel.clientWidth;
-
-            let newScroll = currentScroll + scrollAmount;
-
-            if (newScroll >= maxScroll - 10) { 
-                newScroll = maxScroll;
-            } else if (newScroll <= 10) {
-                newScroll = 0;
-            }
-
-            categoriesPanel.scrollTo({
-                left: newScroll,
-                behavior: 'smooth'
-            });
-        }
-    });
-}
