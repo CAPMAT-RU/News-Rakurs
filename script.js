@@ -9,39 +9,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const scrollToTopButton = document.getElementById('scrollToTop');
 
-    let allNewsData = [];
+    // ✅ Массив новостей (статический, без fetch)
+    const allNewsData = [
+        { 
+            id: 1, 
+            title: 'Топливный Шок: Все Пойдет по Набиуллиной', 
+            category: 'Экономика', 
+            image: 'images/5411529171307010672_120.jpg', 
+            link: 'news-1.html',
+            description: 'Ну что, дорогие мои, держитесь! Наша любимая Эльвира Сахипзадовна...'
+        },
+        { 
+            id: 2, 
+            title: 'Скандал в правительстве: кто виноват?', 
+            category: 'Политика', 
+            image: 'images/news2.jpg', 
+            link: 'news-2.html',
+            description: 'Крупный скандал разгорелся вокруг министерства...'
+        },
+        { 
+            id: 3, 
+            title: 'Новый прорыв в науке', 
+            category: 'Наука', 
+            image: 'images/news3.jpg',
+            link: 'news-3.html',
+            description: 'Ученые совершили открытие, которое изменит мир...'
+        }
+        // Сюда добавляй остальные новости
+    ];
+
     let currentCategory = 'all';
-
-    // --- 1. ЗАГРУЗКА ДАННЫХ ---
-    fetch('news.json')
-        .then(response => {
-            if (!response.ok) throw new Error(`Ошибка загрузки JSON: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            allNewsData = data.items || [];
-            
-            // Рендер главной новости (Featured)
-            if (data.featuredNewsId && allNewsData.length > 0) {
-                const featured = allNewsData.find(item => item.id === data.featuredNewsId);
-                if (featured) displayFeaturedNews(featured);
-            }
-
-            // Рендер сетки новостей
-            displayNews(allNewsData);
-
-            // Скрываем лоадер
-            if (loader) loader.style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Критическая ошибка:', error);
-            if (loader) {
-                loader.textContent = 'Ошибка загрузки новостей. Проверьте консоль.';
-                loader.style.color = 'red';
-            }
-        });
-
-    // --- ФУНКЦИИ ОТРИСОВКИ ---
 
     function formatDate(dateString) {
         try {
@@ -69,20 +66,35 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
                         </div>
                     ` : ''}
-                    <p class="featured-news-description">${newsItem.description}</p>
-                    <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
+                    <p class="featured-news-description">${newsItem.description || ''}</p>
+                    <!-- Ссылка ведет сразу на файл -->
+                    <a href="${newsItem.link}" class="read-more-featured">Читать полностью</a>
                 </div>
             </div>
         `;
+    }
 
-        // Обработчик клика по главной новости
-        const btn = featuredNewsContainer.querySelector('.read-more-featured');
-        if (btn) {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                handleReadMoreClick(e.target.getAttribute('data-id'));
-            });
-        }
+    function normalizeCategory(cat) {
+        if (!cat) return 'other';
+        let key = cat.toLowerCase().trim();
+        if (['государство', 'гос'].includes(key)) return 'государство';
+        if (['сво'].includes(key)) return 'сво';
+        if (['общество'].includes(key)) return 'общество';
+        if (['регионы'].includes(key)) return 'регионы';
+        if (['происшествия', 'чп'].includes(key)) return 'происшествия';
+        if (['криминал'].includes(key)) return 'криминал';
+        if (['политика'].includes(key)) return 'политика';
+        if (['геополитика'].includes(key)) return 'геополитика';
+        if (['коррупция'].includes(key)) return 'коррупция';
+        if (['шоу-бизнес', 'шоу бизнес'].includes(key)) return 'шоу-бизнес';
+        if (['спорт'].includes(key)) return 'спорт';
+        if (['наука'].includes(key)) return 'наука';
+        if (['стиль', 'мода'].includes(key)) return 'стиль';
+        if (['культура'].includes(key)) return 'культура';
+        if (['экономика'].includes(key)) return 'экономика';
+        if (['технологии', 'it', 'tech'].includes(key)) return 'технологии';
+        if (['мир', 'международное'].includes(key)) return 'мир';
+        return 'other';
     }
 
     function displayNews(newsArray) {
@@ -95,31 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         newsArray.forEach(newsItem => {
-            // --- НОРМАЛИЗАЦИЯ КАТЕГОРИЙ ---
-            let rawCategory = (newsItem.category || '').trim();
-            let key = rawCategory.toLowerCase();
-
-            if (['государство', 'гос'].includes(key)) key = 'государство';
-            else if (['сво'].includes(key)) key = 'сво';
-            else if (['общество'].includes(key)) key = 'общество';
-            else if (['регионы'].includes(key)) key = 'регионы';
-            else if (['происшествия', 'чп'].includes(key)) key = 'происшествия';
-            else if (['криминал'].includes(key)) key = 'криминал';
-            else if (['политика'].includes(key)) key = 'политика';
-            else if (['геополитика'].includes(key)) key = 'геополитика';
-            else if (['коррупция'].includes(key)) key = 'коррупция';
-            else if (['шоу-бизнес', 'шоу бизнес'].includes(key)) key = 'шоу-бизнес';
-            else if (['спорт'].includes(key)) key = 'спорт';
-            else if (['наука'].includes(key)) key = 'наука';
-            else if (['стиль', 'мода'].includes(key)) key = 'стиль';
-            else if (['культура'].includes(key)) key = 'культура';
-            else if (['экономика'].includes(key)) key = 'экономика';
-            else if (['технологии', 'it', 'tech'].includes(key)) key = 'технологии';
-            else if (['мир', 'международное'].includes(key)) key = 'мир';
-            else key = 'other';
-            // --------------------------------------
-
-            const displayText = rawCategory || 'Разное';
+            const key = normalizeCategory(newsItem.category);
+            const displayText = newsItem.category || 'Разное';
             const finalClass = `category-${key}`;
             const categoryBadge = `<span class="news-category-badge ${finalClass}">${displayText}</span>`;
 
@@ -135,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const imgSrc = newsItem.image || 'https://via.placeholder.com/300x220?text=Нет+фото';
 
+            // ВАЖНО: ссылка теперь берется из поля link (news-X.html)
             newsContainer.innerHTML += `
                 <div class="news-item">
                     <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
@@ -142,15 +132,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${categoryBadge}
                         <h3 class="news-title">${newsItem.title}</h3>
                         ${metaHtml}
-                        <p class="news-description">${newsItem.description}</p>
-                        <a href="#" class="read-more" data-id="${newsItem.id}">Читать далее</a>
+                        <p class="news-description">${newsItem.description || ''}</p>
+                        <a href="${newsItem.link}" class="read-more">Читать далее</a>
                     </div>
                 </div>
             `;
         });
     }
 
-    // --- ФИЛЬТРАЦИЯ И ПОИСК ---
+    // --- Инициализация ---
+    
+    // Если есть featuredNewsId в данных (опционально), можно показать главную новость
+    // Сейчас просто показываем все новости
+    displayNews(allNewsData);
+
+    if (loader) loader.style.display = 'none';
+
+    // --- ФИЛЬТРАЦИЯ ---
 
     if (categoryButtons.length > 0) {
         categoryButtons.forEach(button => {
@@ -167,14 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = currentCategory === 'all' 
             ? allNewsData 
             : allNewsData.filter(item => {
-                const itemCat = (item.category || '').toLowerCase().trim();
-                const filterCat = currentCategory.toLowerCase().trim();
-
-                if (['гос', 'государство'].includes(itemCat) && ['гос', 'государство'].includes(filterCat)) return true;
+                const itemCat = normalizeCategory(item.category);
+                const filterCat = normalizeCategory(currentCategory);
                 return itemCat === filterCat;
             });
         displayNews(filtered);
     }
+
+    // --- ПОИСК ---
 
     if (searchInput) {
         searchInput.addEventListener('input', () => {
@@ -187,28 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayNews(filtered);
             } else if (query.length === 0) {
                 filterNews(); 
-            }
-        });
-    }
-
-    // --- НАВИГАЦИЯ И КНОПКИ ---
-
-    function handleReadMoreClick(newsId) {
-        const item = allNewsData.find(i => i.id === newsId);
-        if (item) {
-            window.location.href = `article.html?id=${newsId}`; 
-        } else {
-            console.warn('Новость с ID', newsId, 'не найдена');
-        }
-    }
-
-    if (newsContainer) {
-        newsContainer.addEventListener('click', (event) => {
-            const target = event.target.closest('.read-more');
-            if (target) {
-                event.preventDefault();
-                const id = target.getAttribute('data-id');
-                if(id) handleReadMoreClick(id);
             }
         });
     }
@@ -251,34 +227,4 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         document.body.classList.remove('dark-theme');
     }
-
-    // ============================================================
-    // !!! ГЛАВНОЕ ИСПРАВЛЕНИЕ ДЛЯ СКРОЛЛА КАТЕГОРИЙ !!!
-    // Вставь этот блок в конец, перед закрывающей скобкой });
-    // ============================================================
-    
-    function fixCategoryScroll() {
-        const panel = document.querySelector('.categories-panel');
-        
-        if (!panel) {
-            console.warn('.categories-panel не найден в DOM. Проверь HTML.');
-            return;
-        }
-
-        panel.addEventListener('wheel', (event) => {
-            // Если крутим колесико (deltaY != 0), двигаем панель
-            if (event.deltaY !== 0) {
-                // Двигаем влево/вправо
-                panel.scrollLeft += event.deltaY;
-                
-                // ВАЖНО: Блокируем прокрутку всей страницы, пока мышь над панелью
-                event.preventDefault(); 
-            }
-        }, { passive: false }); // passive: false обязательно, иначе preventDefault не сработает
-    }
-
-    // Запускаем функцию сразу после загрузки DOM
-    fixCategoryScroll();
-
 });
-
