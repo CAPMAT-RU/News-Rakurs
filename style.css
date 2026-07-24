@@ -96,7 +96,6 @@ header {
 .categories-panel {
     height: 30px;
     width: 100%;
-    /* Используем переменные для фона в зависимости от темы */
     background-color: var(--categories-bg-light);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -105,74 +104,83 @@ header {
     z-index: 1001;
     display: flex;
     align-items: center;
-    overflow-x: auto; /* КЛЮЧЕВОЕ СВОЙСТВО: включает горизонтальный скролл */
-    scrollbar-width: thin; /* Тонкая полоса в Firefox */
-    -ms-overflow-style: none; /* Убирает полосу в старых IE/Edge */
-    padding-left: 10px; /* Отступ слева, чтобы первая кнопка не прилипала к краю */
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -ms-overflow-style: none;
+    padding-left: 10px;
 }
 
 body.dark-theme .categories-panel {
     background-color: var(--categories-bg-dark);
 }
 
-/* Стили для скроллбара (Chrome, Safari, Edge) - делаем его незаметным */
 .categories-panel::-webkit-scrollbar {
-    height: 4px; /* Очень тонкая полоска */
+    height: 4px;
 }
 .categories-panel::-webkit-scrollbar-track {
-    background: transparent; /* Прозрачный трек */
+    background: transparent;
 }
 .categories-panel::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4); /* Полупрозрачная ручка */
+    background: rgba(255, 255, 255, 0.4);
     border-radius: 10px;
 }
 
-/* Контейнер кнопок */
 .categories-wrapper {
     display: flex;
-    gap: 12px; /* Расстояние между кнопками */
+    gap: 12px;
     padding: 0 10px;
-    flex-shrink: 0; /* Важно: не сжимать контейнер */
+    flex-shrink: 0;
 }
 
-/* Кнопки категорий */
+/* Кнопки категорий с разными цветами */
 .category-btn {
-    white-space: nowrap; /* ЗАПРЕЩАЕТ перенос текста на новую строку */
+    white-space: nowrap;
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--text);
+    color: #fff;
     cursor: pointer;
     border: none;
-    background: transparent;
-    padding: 4px 8px;
+    padding: 6px 14px;
     position: relative;
-    transition: color 0.2s, transform 0.1s;
+    transition: all 0.2s ease;
     display: inline-block;
+    border-radius: 20px;
+    min-width: 95px;
+    text-align: center;
 }
 
-/* Эффект подчеркивания (как у тебя было) */
-.category-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background-color: var(--accent);
-    transition: width 0.2s ease-in-out;
-}
+/* Цвета для разных категорий */
+.cat-all { background-color: #95a5a6; }
+.cat-svo { background-color: #ffeb3b; color: #000; }
+.cat-society { background-color: #4caf50; }
+.cat-regions { background-color: #2196f3; }
+.cat-state { background-color: #9c27b0; }
+.cat-incidents { background-color: #f44336; }
+.cat-crime { background-color: #607d8b; }
+.cat-politics { background-color: #ff9800; color: #000; }
+.cat-geopolitics { background-color: #00bcd4; }
+.cat-corruption { background-color: #795548; }
+.cat-showbiz { background-color: #ec407a; }
+.cat-sport { background-color: #ff5722; }
+.cat-science { background-color: #5d4037; }
+.cat-style { background-color: #8bc34a; color: #000; }
+.cat-culture { background-color: #d81b60; }
 
 .category-btn:hover:not(.active) {
-    color: var(--accent);
+    transform: translateY(-2px);
+    filter: brightness(0.95);
 }
 
 .category-btn.active {
-    color: var(--accent);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    font-weight: 700;
 }
 
-.category-btn.active::after {
-    width: 100%;
+/* Убираем старое подчеркивание, так как теперь используем цветные плашки */
+.category-btn::after {
+    content: none;
 }
 
 /* --- ОСТАЛЬНЫЕ СТИЛИ ТВОЕГО САЙТА (без дублей и мусора) --- */
