@@ -1,4 +1,4 @@
-console.log('Скрипт запустился');
+console.log('Скрипт новостей запущен');
 
 document.addEventListener('DOMContentLoaded', () => {
     const newsContainer = document.getElementById('news-container');
@@ -12,49 +12,52 @@ document.addEventListener('DOMContentLoaded', () => {
     let allNewsData = [];
     let currentCategory = 'all';
 
-    // --- 1. ЗАГРУЗКА НОВОСТЕЙ ---
+    // --- 1. ЗАГРУЗКА ДАННЫХ ---
     fetch('news.json')
         .then(response => {
-            if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
+            if (!response.ok) throw new Error(`Ошибка загрузки JSON: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            allNewsData = data.items || []; 
-
-            // Показываем главную новость
+            allNewsData = data.items || [];
+            
+            // Рендер главной новости (Featured)
             if (data.featuredNewsId && allNewsData.length > 0) {
-                const featuredNews = allNewsData.find(item => item.id === data.featuredNewsId);
-                if (featuredNews) {
-                    displayFeaturedNews(featuredNews);
-                }
+                const featured = allNewsData.find(item => item.id === data.featuredNewsId);
+                if (featured) displayFeaturedNews(featured);
             }
 
-            // Показываем список новостей
+            // Рендер сетки новостей
             displayNews(allNewsData);
 
             // Скрываем лоадер
-            if (loader) {
-                loader.style.display = 'none'; 
-            }
+            if (loader) loader.style.display = 'none';
         })
         .catch(error => {
-            console.error('Ошибка загрузки новостей:', error);
+            console.error('Критическая ошибка:', error);
             if (loader) {
-                loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
-                loader.style.display = 'block'; 
+                loader.textContent = 'Ошибка загрузки новостей. Проверьте консоль.';
+                loader.style.color = 'red';
             }
         });
 
     // --- ФУНКЦИИ ОТРИСОВКИ ---
 
+    function formatDate(dateString) {
+        try {
+            return new Date(dateString).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
     function displayFeaturedNews(newsItem) {
         if (!featuredNewsContainer) return;
-    
-        const imgSrc = newsItem.image ? newsItem.image : 'https://via.placeholder.com/600x400?text=Нет+фото';
+
+        const imgSrc = newsItem.image || 'https://via.placeholder.com/600x400?text=Нет+фото';
         const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
         const dateText = newsItem.date ? formatDate(newsItem.date) : '';
-    
-        featuredNewsContainer.style.display = 'block';
+
         featuredNewsContainer.innerHTML = `
             <div class="featured-news-card">
                 <img src="${imgSrc}" alt="${newsItem.title}" class="featured-news-image">
@@ -71,79 +74,83 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-    
-        const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
-        if (readMoreFeatured) {
-            readMoreFeatured.addEventListener('click', (e) => {
+
+        // Обработчик клика по главной новости
+        const btn = featuredNewsContainer.querySelector('.read-more-featured');
+        if (btn) {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 handleReadMoreClick(e.target.getAttribute('data-id'));
             });
         }
     }
-    
-    function formatDate(dateString) {
-        try {
-            return new Date(dateString).toLocaleDateString('ru-RU', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-        } catch (e) {
-            return dateString; 
-        }
-    }
 
     function displayNews(newsArray) {
         if (!newsContainer) return;
+        newsContainer.innerHTML = '';
 
-        newsContainer.innerHTML = ''; 
-        
         if (!newsArray || newsArray.length === 0) {
-            newsContainer.innerHTML = '<p style="padding: 20px; color: var(--meta);">Новостей не найдено.</p>';
+            newsContainer.innerHTML = '<p style="padding: 20px; color: var(--meta); text-align: center;">Новостей не найдено</p>';
             return;
         }
 
-        // Словарь для перевода русских категорий в английские (для цветов бейджей)
-        const categoryMap = {
-            'спорт': 'спорт',
-            'политика': 'политика',
-            'экономика': 'экономика',
-            'технологии': 'технологии',
-            'культура': 'культура',
-            'наука': 'наука',
-            'мир': 'мир',
-            'сво': 'сво',
-            'общество': 'общество',
-            'регионы': 'регионы',
-            'гос': 'государство',
-            'государство': 'государство',
-            'геополитика': 'геополитика',
-            'криминал': 'криминал',
-            'коррупция': 'коррупция',
-            'стиль': 'стиль',
-            'происшествия': 'происшествия',
-            'шоу-бизнес': 'шоу-бизнес'
-        };
+        newsArray.forEach(newsItem => {
+            // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ КАТЕГОРИЙ ---
+            // 1. Берем категорию из JSON
+            let rawCategory = (newsItem.category || '').trim();
+            
+            // 2. Приводим к нижнему регистру и убираем лишние пробелы
+            let key = rawCategory.toLowerCase();
 
-        newsArray.forEach((newsItem, index) => {
+            // 3. Нормализуем названия, чтобы "Государство", "гос", "Гос" стали одним ключом
+            if (['государство', 'гос'].includes(key)) {
+                key = 'государство';
+            } else if (['сво'].includes(key)) {
+                key = 'сво';
+            } else if (['общество'].includes(key)) {
+                key = 'общество';
+            } else if (['регионы'].includes(key)) {
+                key = 'регионы';
+            } else if (['происшествия', 'чп'].includes(key)) {
+                key = 'происшествия';
+            } else if (['криминал'].includes(key)) {
+                key = 'криминал';
+            } else if (['политика'].includes(key)) {
+                key = 'политика';
+            } else if (['геополитика'].includes(key)) {
+                key = 'геополитика';
+            } else if (['коррупция'].includes(key)) {
+                key = 'коррупция';
+            } else if (['шоу-бизнес', 'шоу бизнес'].includes(key)) {
+                key = 'шоу-бизнес';
+            } else if (['спорт'].includes(key)) {
+                key = 'спорт';
+            } else if (['наука'].includes(key)) {
+                key = 'наука';
+            } else if (['стиль', 'мода'].includes(key)) {
+                key = 'стиль';
+            } else if (['культура'].includes(key)) {
+                key = 'культура';
+            } else if (['экономика'].includes(key)) {
+                key = 'экономика';
+            } else if (['технологии', 'it', 'tech'].includes(key)) {
+                key = 'технологии';
+            } else if (['мир', 'международное'].includes(key)) {
+                key = 'мир';
+            } 
+            // Если категории нет в списке - ставим 'other'
+            else {
+                key = 'other';
+            }
+            // --------------------------------------
+
+            const displayText = rawCategory || 'Разное';
+            const finalClass = `category-${key}`;
+            const categoryBadge = `<span class="news-category-badge ${finalClass}">${displayText}</span>`;
+
             const formattedDate = newsItem.date ? formatDate(newsItem.date) : '';
             const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
-        
-            let rawCategory = newsItem.category || '';
-            let displayText = rawCategory; 
             
-            if (!rawCategory || rawCategory.trim() === '') {
-                displayText = 'Разное';
-            }
-        
-            const key = rawCategory.toLowerCase().trim();
-            const cssSuffix = categoryMap[key] || 'other';
-            const finalClass = `category-${cssSuffix}`;
-        
-            const categoryBadge = displayText 
-                ? `<span class="news-category-badge ${finalClass}">${displayText}</span>` 
-                : '';
-        
             const metaHtml = (formattedDate || authorText) 
                 ? `<div class="news-meta">
                       ${formattedDate ? `<span class="meta-date">${formattedDate}</span>` : ''}
@@ -151,9 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>` 
                 : '';
 
+            const imgSrc = newsItem.image || 'https://via.placeholder.com/300x220?text=Нет+фото';
+
             newsContainer.innerHTML += `
                 <div class="news-item">
-                    <img src="${newsItem.image}" alt="${newsItem.title}" class="news-image">
+                    <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
                     <div class="news-content">
                         ${categoryBadge}
                         <h3 class="news-title">${newsItem.title}</h3>
@@ -167,12 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ФИЛЬТРАЦИЯ И ПОИСК ---
+
     if (categoryButtons.length > 0) {
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
                 categoryButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                currentCategory = button.getAttribute('data-category');
+                currentCategory = button.getAttribute('data-category') || 'all';
                 filterNews();
             });
         });
@@ -181,7 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function filterNews() {
         const filtered = currentCategory === 'all' 
             ? allNewsData 
-            : allNewsData.filter(item => (item.category || '').toLowerCase() === currentCategory.toLowerCase());
+            : allNewsData.filter(item => {
+                // Нормализация для фильтра такая же, как при отрисовке
+                const itemCat = (item.category || '').toLowerCase().trim();
+                const filterCat = currentCategory.toLowerCase().trim();
+
+                // Проверка на синонимы (Гос/Государство)
+                if (['гос', 'государство'].includes(itemCat) && ['гос', 'государство'].includes(filterCat)) return true;
+                
+                return itemCat === filterCat;
+            });
         displayNews(filtered);
     }
 
@@ -200,78 +219,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ОБРАБОТКА КЛИКА НА "ЧИТАТЬ ДАЛЕЕ" ---
+    // --- НАВИГАЦИЯ И КНОПКИ ---
+
     function handleReadMoreClick(newsId) {
         const item = allNewsData.find(i => i.id === newsId);
         if (item) {
-            window.location.href = `${newsId}.html`;
+            window.location.href = `article.html?id=${newsId}`; 
         } else {
-            alert('Новость не найдена в текущем списке данных.');
+            console.warn('Новость с ID', newsId, 'не найдена');
         }
     }
 
-    if (newsContainer) { 
+    if (newsContainer) {
         newsContainer.addEventListener('click', (event) => {
             const target = event.target.closest('.read-more');
             if (target) {
-                event.preventDefault(); 
+                event.preventDefault();
                 const id = target.getAttribute('data-id');
                 if(id) handleReadMoreClick(id);
             }
         });
     }
 
-    // --- ПРОКРУТКА И ПРОГРЕСС-БАР ---
+    // --- ПРОГРЕСС-БАР И КНОПКА "НАВЕРХ" ---
+
     window.addEventListener('scroll', () => {
-        progressBarScroll();
-        
-        if (scrollToTopButton) {
-            if (window.scrollY > 300) {
-                scrollToTopButton.classList.remove('hidden');
-            } else {
-                scrollToTopButton.classList.add('hidden');
+        if (progressBar) {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            if (height > 0) {
+                progressBar.style.width = ((winScroll / height) * 100) + '%';
             }
+        }
+
+        if (scrollToTopButton) {
+            scrollToTopButton.classList.toggle('hidden', window.scrollY <= 300);
         }
     });
 
-    function progressBarScroll() {
-        if (!progressBar) return;
-        
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        
-        if (height > 0) {
-            progressBar.style.width = ((winScroll / height) * 100) + '%';
-        }
-    }
-
     if (scrollToTopButton) {
         scrollToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
+    // --- ТЕМА (СВЕТЛАЯ/ТЕМНАЯ) ---
     const themeToggleBtn = document.querySelector('.theme-toggle');
     
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
-            
-            if (document.body.classList.contains('dark-theme')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
         });
     }
 
-    if (localStorage.getItem('theme') === 'dark') {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
     } else {
-        document.body.classList.remove('dark-theme'); 
+        document.body.classList.remove('dark-theme');
     }
 });
