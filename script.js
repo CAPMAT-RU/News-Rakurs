@@ -47,29 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-    // --- ФУНКЦИЯ ДЛЯ ГОРИЗОНТАЛЬНОГО СКРОЛЛА КОЛЕСИКОМ (НОВОЕ) ---
-    function initHorizontalScroll() {
-        const panel = document.querySelector('.categories-panel');
-        
-        if (!panel) return;
-
-        // Слушаем событие wheel (колесико мыши)
-        panel.addEventListener('wheel', (event) => {
-            // Если крутим вертикально (deltaY), значит хотим скроллить панель горизонтально
-            if (event.deltaY !== 0) { 
-                event.preventDefault(); // Блокируем стандартную прокрутку страницы вниз
-                
-                // Сдвигаем панель влево или вправо в зависимости от направления колеса
-                panel.scrollLeft += event.deltaY;
-            }
-        }, { passive: false }); 
-        // passive: false критически важен, иначе нельзя будет вызвать event.preventDefault()
-    }
-    
-    // Запуск функции
-    initHorizontalScroll();
-    // -------------------------------------------------------------
-
     // --- ФУНКЦИИ ОТРИСОВКИ ---
     function displayFeaturedNews(newsItem) {
         if (featuredNewsContainer) {
@@ -104,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Словарь для перевода русских категорий в английские (для цветов)
         const categoryMap = {
             'спорт': 'sport',
             'политика': 'politics',
@@ -124,18 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // --- ЛОГИКА ПЕРЕВОДА КАТЕГОРИЙ ---
             let rawCategory = newsItem.category || '';
-            let displayText = rawCategory; 
+            let displayText = rawCategory; // Текст для плашки (оставляем как есть: "Спорт")
+            
+            // Приводим к нижнему регистру и убираем лишние пробелы для поиска в словаре
             const key = rawCategory.toLowerCase().trim();
+            
+            // Ищем английское название для цвета. Если не нашли - ставим 'other' (серый)
             const colorClass = categoryMap[key] || 'other';
             const finalClass = `category-${colorClass}`;
+            // -----------------------------------
             
             const newsElement = document.createElement('div');
             newsElement.classList.add('news-item');
             
             newsElement.innerHTML = `
                 <div class="news-card">
+                    <!-- Плашка: текст русский, класс английский -->
                     <span class="news-category-badge ${finalClass}">${displayText}</span>
+                    
                     <img src="${newsItem.image}" alt="${newsItem.title}" class="news-image">
                     <div class="news-content">
                         <h3 class="news-title">${newsItem.title}</h3>
@@ -196,7 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ПРОКРУТКА И ПРОГРЕСС-БАР ---
+    // --- ПРОКРУТКА И ПРОГРЕСС-БАР (ИСПРАВЛЕНО) ---
+    
+    // 1. Логика прогресс-бара (оставлена как была)
     window.addEventListener('scroll', () => {
         progressBarScroll();
     });
@@ -209,8 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Логика кнопки "Наверх"
+    // 2. Логика кнопки "Наверх" (ПОЛНОСТЬЮ ПЕРЕПИСАНА)
     if (scrollToTopButton) {
+        // Показываем/скрываем кнопку при скролле
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
                 scrollToTopButton.classList.add('visible');
@@ -219,10 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Плавная прокрутка при клике
         scrollToTopButton.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: 'smooth' // Плавная анимация
             });
         });
     }

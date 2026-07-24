@@ -24,10 +24,10 @@
     <!-- ПОДКЛЮЧЕНИЕ ВНЕШНЕГО CSS -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Переменные для точного позиционирования -->
+    <!-- Переменные для точного позиционирования (чтобы панель встала ровно под шапкой) -->
     <style>
         :root {
-            --header-height: 60px;
+            --header-height: 60px; /* Высота вашей шапки + отступы */
         }
     </style>
 </head>
@@ -62,27 +62,28 @@
         </div>
     </header>
 
-    <!-- ПАНЕЛЬ КАТЕГОРИЙ -->
-    <div class="categories-wrapper" id="catWrapper">
-        <nav class="categories" id="catNav">
+    <!-- НОВАЯ ПАНЕЛЬ КАТЕГОРИЙ -->
+    <!-- Высота 30px, прозрачность, горизонтальный скролл -->
+    <div class="categories-panel">
+        <div class="categories-wrapper" id="menu">
             <button class="category-btn active" data-category="all">Все новости</button>
-            <button class="category-btn category-svo" data-category="СВО">СВО</button>
-            <button class="category-btn category-society" data-category="Общество">Общество</button>
-            <button class="category-btn category-regions" data-category="Регионы">Регионы</button>
-            <button class="category-btn category-state" data-category="Государство">Государство</button>
-            <button class="category-btn category-incidents" data-category="Происшествия">Происшествия</button>
-            <button class="category-btn category-crime" data-category="Криминал">Криминал</button>
-            <button class="category-btn category-politics" data-category="Политика">Политика</button>
-            <button class="category-btn category-geopolitics" data-category="Геополитика">Геополитика</button>
-            <button class="category-btn category-corruption" data-category="Коррупция">Коррупция</button>
-            <button class="category-btn category-showbiz" data-category="Шоу-бизнес">Шоу-бизнес</button>
-            <button class="category-btn category-sport" data-category="Спорт">Спорт</button>
-            <button class="category-btn category-science" data-category="Наука">Наука</button>
-            <button class="category-btn category-style" data-category="Стиль">Стиль</button>
-            <button class="category-btn category-culture" data-category="Культура">Культура</button>
-        </nav>
+            <button class="category-btn" data-category="СВО">СВО</button>
+            <button class="category-btn" data-category="Общество">Общество</button>
+            <button class="category-btn" data-category="Регионы">Регионы</button>
+            <button class="category-btn" data-category="Государство">Государство</button>
+            <button class="category-btn" data-category="Происшествия">Происшествия</button>
+            <button class="category-btn" data-category="Криминал">Криминал</button>
+            <button class="category-btn" data-category="Политика">Политика</button>
+            <button class="category-btn" data-category="Геополитика">Геополитика</button>
+            <button class="category-btn" data-category="Коррупция">Коррупция</button>
+            <button class="category-btn" data-category="Шоу-бизнес">Шоу-бизнес</button>
+            <button class="category-btn" data-category="Спорт">Спорт</button>
+            <button class="category-btn" data-category="Наука">Наука</button>
+            <button class="category-btn" data-category="Стиль">Стиль</button>
+            <button class="category-btn" data-category="Культура">Культура</button>
+        </div>
     </div>
-    <!-- КОНЕЦ ПАНЕЛИ КАТЕГОРИЙ -->
+    <!-- КОНЕЦ НОВОЙ ПАНЕЛИ -->
 
     <div id="top-scroll-indicator" style="
         position: fixed;
