@@ -1,4 +1,4 @@
-console.log('Скрипт новостей запущен');
+console.log('Скрипт запустился');
 
 document.addEventListener('DOMContentLoaded', () => {
     const newsContainer = document.getElementById('news-container');
@@ -9,156 +9,220 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const scrollToTopButton = document.getElementById('scrollToTop');
 
-    // --- НАСТРОЙКА НОВОСТЕЙ (Только ссылки, без контента) ---
-    // Здесь мы просто перечисляем, какой файл открывать для каждой новости.
-    // Контент (заголовки, картинки) уже лежит ВНУТРИ файлов news-1.html, news-2.html и т.д.
-    const allNewsData = [
-        { id: 1, title: 'Топливный Шок: Все Пойдет по Набиуллиной', category: 'Экономика', link: 'news-1.html', image: 'images/5411529171307010672_120.jpg', description: 'Краткое описание для карточки' },
-        { id: 2, title: 'Скандал в правительстве: кто виноват?', category: 'Политика', link: 'news-2.html', image: 'images/news2.jpg', description: 'Краткое описание для карточки' },
-        { id: 3, title: 'Новый прорыв в науке', category: 'Наука', link: 'news-3.html', image: 'images/news3.jpg', description: 'Краткое описание для карточки' }
-        // Сюда добавляй только ID, Title, Category, Link и Image для превью.
-        // Весь текст статьи остается в news-X.html
-    ];
-
+    let allNewsData = [];
     let currentCategory = 'all';
 
-    function normalizeCategory(cat) {
-        if (!cat) return 'other';
-        let key = cat.toLowerCase().trim();
-        if (['государство', 'гос'].includes(key)) return 'государство';
-        if (['сво'].includes(key)) return 'сво';
-        if (['общество'].includes(key)) return 'общество';
-        if (['регионы'].includes(key)) return 'регионы';
-        if (['происшествия', 'чп'].includes(key)) return 'происшествия';
-        if (['криминал'].includes(key)) return 'криминал';
-        if (['политика'].includes(key)) return 'политика';
-        if (['геополитика'].includes(key)) return 'геополитика';
-        if (['коррупция'].includes(key)) return 'коррупция';
-        if (['шоу-бизнес', 'шоу бизнес'].includes(key)) return 'шоу-бизнес';
-        if (['спорт'].includes(key)) return 'спорт';
-        if (['наука'].includes(key)) return 'наука';
-        if (['стиль', 'мода'].includes(key)) return 'стиль';
-        if (['культура'].includes(key)) return 'культура';
-        if (['экономика'].includes(key)) return 'экономика';
-        if (['технологии', 'it', 'tech'].includes(key)) return 'технологии';
-        if (['мир', 'международное'].includes(key)) return 'мир';
-        return 'other';
-    }
+    // --- 1. ЗАГРУЗКА НОВОСТЕЙ ---
+    fetch('news.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            allNewsData = data.items || []; 
 
+            // Показываем главную новость
+            if (data.featuredNewsId && allNewsData.length > 0) {
+                const featuredNews = allNewsData.find(item => item.id === data.featuredNewsId);
+                if (featuredNews) {
+                    displayFeaturedNews(featuredNews);
+                }
+            }
+
+            // Показываем список новостей
+            displayNews(allNewsData);
+
+            // Скрываем лоадер
+            if (loader) {
+                loader.style.display = 'none'; 
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки новостей:', error);
+            if (loader) {
+                loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
+                loader.style.display = 'block'; 
+            }
+        });
+
+    // --- ФУНКЦИИ ОТРИСОВКИ ---
     function displayFeaturedNews(newsItem) {
-        if (!featuredNewsContainer) return;
-        const imgSrc = newsItem.image || 'https://via.placeholder.com/600x400?text=Нет+фото';
-        featuredNewsContainer.innerHTML = `
-            <div class="featured-news-card">
-                <img src="${imgSrc}" alt="${newsItem.title}" class="featured-news-image">
-                <div class="featured-news-content">
-                    <h2 class="featured-news-title">${newsItem.title}</h2>
-                    <p class="featured-news-description">${newsItem.description || ''}</p>
-                    <a href="${newsItem.link}" class="read-more-featured">Читать полностью</a>
+        if (featuredNewsContainer) {
+            featuredNewsContainer.style.display = 'block';
+            featuredNewsContainer.innerHTML = `
+                <div class="featured-news-card">
+                    <img src="${newsItem.image}" alt="${newsItem.title}" class="featured-news-image">
+                    <div class="featured-news-content">
+                        <h2 class="featured-news-title">${newsItem.title}</h2>
+                        <p class="featured-news-date">${newsItem.date}</p>
+                        <p class="featured-news-description">${newsItem.description}</p>
+                        <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+            const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
+            if (readMoreFeatured) {
+                readMoreFeatured.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleReadMoreClick(e.target.getAttribute('data-id'));
+                });
+            }
+        }
     }
 
     function displayNews(newsArray) {
         if (!newsContainer) return;
-        newsContainer.innerHTML = '';
 
+        newsContainer.innerHTML = ''; 
         if (!newsArray || newsArray.length === 0) {
-            newsContainer.innerHTML = '<p style="padding: 20px; color: var(--meta); text-align: center;">Новостей не найдено</p>';
+            newsContainer.innerHTML = '<p>Новостей не найдено.</p>';
             return;
         }
 
         newsArray.forEach(newsItem => {
-            const key = normalizeCategory(newsItem.category);
-            const displayText = newsItem.category || 'Разное';
-            const finalClass = `category-${key}`;
-            const categoryBadge = `<span class="news-category-badge ${finalClass}">${displayText}</span>`;
+            let formattedDate = '';
+            if (newsItem.date) {
+                try {
+                    formattedDate = new Date(newsItem.date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+                } catch (e) {
+                    formattedDate = newsItem.date; 
+                }
+            }
 
-            const imgSrc = newsItem.image || 'https://via.placeholder.com/300x220?text=Нет+фото';
-
-            newsContainer.innerHTML += `
-                <div class="news-item">
-                    <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
+            // --- ЛОГИКА КАТЕГОРИИ (Новое) ---
+            // Получаем категорию. Если её нет, ставим 'other'
+            const category = newsItem.category ? newsItem.category.toLowerCase() : 'other';
+            
+            // Формируем класс для цвета (category-sport, category-tech и т.д.)
+            const categoryClass = `category-${category}`;
+            
+            // Текст для отображения (можно оставить как есть, или сделать маппинг: sport -> "Спорт")
+            const categoryText = newsItem.category || 'Разное';
+            // ---------------------------------
+            
+            const newsElement = document.createElement('div');
+            newsElement.classList.add('news-item');
+            
+            newsElement.innerHTML = `
+                <div class="news-card">
+                    <!-- Плашка категории -->
+                    <span class="news-category-badge ${categoryClass}">${categoryText}</span>
+                    
+                    <img src="${newsItem.image}" alt="${newsItem.title}" class="news-image">
                     <div class="news-content">
-                        ${categoryBadge}
                         <h3 class="news-title">${newsItem.title}</h3>
-                        <p class="news-description">${newsItem.description || ''}</p>
-                        <!-- Ссылка ведет прямо на твой готовый файл news-X.html -->
-                        <a href="${newsItem.link}" class="read-more">Читать далее</a>
+                        <p class="news-date">${formattedDate}</p>
+                        <p class="news-description">${newsItem.description}</p>
+                        <a href="#" class="read-more" data-id="${newsItem.id}">Читать далее</a>
                     </div>
                 </div>
             `;
+            newsContainer.appendChild(newsElement);
         });
     }
 
-    // Инициализация
-    displayNews(allNewsData);
-    if (loader) loader.style.display = 'none';
-
-    if (featuredNewsContainer && allNewsData.length > 0) {
-        displayFeaturedNews(allNewsData[0]);
-    }
-
-    // Фильтры
-    if (categoryButtons.length > 0) {
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                currentCategory = button.getAttribute('data-category') || 'all';
-                filterNews();
-            });
+    // --- ФИЛЬТРАЦИЯ И ПОИСК ---
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentCategory = button.getAttribute('data-category');
+            filterNews();
         });
-    }
+    });
 
     function filterNews() {
         const filtered = currentCategory === 'all' 
             ? allNewsData 
-            : allNewsData.filter(item => normalizeCategory(item.category) === normalizeCategory(currentCategory));
+            : allNewsData.filter(item => item.category === currentCategory);
         displayNews(filtered);
     }
 
-    // Поиск
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            if (query.length > 1) {
-                const filtered = allNewsData.filter(item =>
-                    item.title.toLowerCase().includes(query) ||
-                    (item.description || '').toLowerCase().includes(query)
-                );
-                displayNews(filtered);
-            } else if (query.length === 0) {
-                filterNews(); 
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        if (query.length > 1) {
+            const filtered = allNewsData.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                item.description.toLowerCase().includes(query)
+            );
+            displayNews(filtered);
+        } else if (query.length === 0) {
+            filterNews(); 
+        }
+    });
+
+    // --- ОБРАБОТКА КЛИКА НА "ЧИТАТЬ ДАЛЕЕ" ---
+    function handleReadMoreClick(newsId) {
+        const item = allNewsData.find(i => i.id === newsId);
+        if (item) {
+            window.location.href = `${newsId}.html`;
+        }
+    }
+
+    if (newsContainer) { 
+        newsContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('read-more')) {
+                event.preventDefault(); 
+                handleReadMoreClick(event.target.getAttribute('data-id'));
             }
         });
     }
 
-    // Скролл бар и кнопка вверх
+    // --- ПРОКРУТКА И ПРОГРЕСС-БАР (ИСПРАВЛЕНО) ---
+    
+    // 1. Логика прогресс-бара (оставлена как была)
     window.addEventListener('scroll', () => {
-        if (progressBar) {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            if (height > 0) progressBar.style.width = ((winScroll / height) * 100) + '%';
-        }
-        if (scrollToTopButton) scrollToTopButton.classList.toggle('hidden', window.scrollY <= 300);
+        progressBarScroll();
     });
 
-    if (scrollToTopButton) {
-        scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    function progressBarScroll() {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        if (height > 0 && progressBar) {
+            progressBar.style.width = ((winScroll / height) * 100) + '%';
+        }
     }
 
-    // Тема
-    const themeToggleBtn = document.querySelector('.theme-toggle');
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    // 2. Логика кнопки "Наверх" (ПОЛНОСТЬЮ ПЕРЕПИСАНА)
+    if (scrollToTopButton) {
+        // Показываем/скрываем кнопку при скролле
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollToTopButton.classList.add('visible');
+            } else {
+                scrollToTopButton.classList.remove('visible');
+            }
+        });
+
+        // Плавная прокрутка при клике
+        scrollToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Плавная анимация
+            });
         });
     }
 
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') document.body.classList.add('dark-theme');
-    else document.body.classList.remove('dark-theme');
+    // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
+    const themeToggleBtn = document.querySelector('.theme-toggle');
+    
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme'); 
+    }
 });
