@@ -49,23 +49,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayFeaturedNews(newsItem) {
         if (!featuredNewsContainer) return;
-
-        // Безопасное получение картинки
+    
         const imgSrc = newsItem.image ? newsItem.image : 'https://via.placeholder.com/600x400?text=Нет+фото';
-
+        // Получаем автора
+        const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
+        const dateText = newsItem.date ? formatDate(newsItem.date) : '';
+    
         featuredNewsContainer.style.display = 'block';
         featuredNewsContainer.innerHTML = `
             <div class="featured-news-card">
                 <img src="${imgSrc}" alt="${newsItem.title}" class="featured-news-image">
                 <div class="featured-news-content">
                     <h2 class="featured-news-title">${newsItem.title}</h2>
-                    ${newsItem.date ? `<p class="featured-news-date">${formatDate(newsItem.date)}</p>` : ''}
+                    
+                    <!-- БЛОК META: дата слева, автор справа -->
+                    ${dateText || authorText ? `
+                        <div class="news-meta">
+                            ${dateText ? `<span class="meta-date">${dateText}</span>` : ''}
+                            ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
+                        </div>
+                    ` : ''}
+                    
                     <p class="featured-news-description">${newsItem.description}</p>
                     <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
                 </div>
             </div>
         `;
-
+    
         const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
         if (readMoreFeatured) {
             readMoreFeatured.addEventListener('click', (e) => {
@@ -74,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
+    
     function formatDate(dateString) {
         try {
             return new Date(dateString).toLocaleDateString('ru-RU', { 
@@ -121,44 +131,54 @@ document.addEventListener('DOMContentLoaded', () => {
         newsArray.forEach(newsItem => {
             // 1. Форматируем дату
             const formattedDate = newsItem.date ? formatDate(newsItem.date) : '';
+            // 2. Получаем автора
+            const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
 
-            // 2. Логика категорий и цветов
+            // 3. Логика категорий и цветов
             let rawCategory = newsItem.category || '';
             let displayText = rawCategory; 
             
-            // Если категории нет вообще, ставим нейтральное значение
             if (!rawCategory || rawCategory.trim() === '') {
                 displayText = 'Разное';
             }
 
             const key = rawCategory.toLowerCase().trim();
-            const colorClass = categoryMap[key] || 'other'; // Если нет в словаре -> other
+            const colorClass = categoryMap[key] || 'other';
             const finalClass = `category-${colorClass}`;
 
-            // 3. Обработка картинки (защита от битых ссылок)
+            // 4. Обработка картинки
             const imgSrc = newsItem.image ? newsItem.image : 'https://via.placeholder.com/400x250?text=Нет+фото';
 
             // Создаем элемент карточки
             const newsElement = document.createElement('div');
-            newsElement.classList.add('news-card'); // ВАЖНО: этот класс имеет position: relative в CSS
+            newsElement.classList.add('news-card');
             
             if (rawCategory) {
                 newsElement.setAttribute('data-category', rawCategory);
             }
 
+            // --- ВОТ ЗДЕСЬ БЫЛО ИЗМЕНЕНИЕ ---
+            // Теперь здесь тоже есть .news-meta, чтобы разнести дату и автора
             newsElement.innerHTML = `
-                <!-- Бейдж: класс category-color определяет цвет, текст остается русским -->
                 <span class="news-category-badge ${finalClass}">${displayText}</span>
                 
                 <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
                 
                 <div class="news-content">
                     <h3 class="news-title">${newsItem.title}</h3>
-                    ${formattedDate ? `<p class="news-date">${formattedDate}</p>` : ''}
+                    
+                    ${formattedDate || authorText ? `
+                        <div class="news-meta">
+                            ${formattedDate ? `<span class="meta-date">${formattedDate}</span>` : ''}
+                            ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
+                        </div>
+                    ` : ''}
+                    
                     <p class="news-description">${newsItem.description}</p>
                     <a href="#" class="read-more" data-id="${newsItem.id}">Читать далее</a>
                 </div>
             `;
+            // -------------------------------
             
             newsContainer.appendChild(newsElement);
         });
@@ -208,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Глобальный слушатель для кнопок "Читать далее" внутри контейнера
     if (newsContainer) { 
         newsContainer.addEventListener('click', (event) => {
             const target = event.target.closest('.read-more');
@@ -220,11 +239,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ПРОКРУТКА И ПРОГРЕСС-БАР ---
-    
     window.addEventListener('scroll', () => {
         progressBarScroll();
         
-        // Логика кнопки "Наверх"
         if (scrollToTopButton) {
             if (window.scrollY > 300) {
                 scrollToTopButton.classList.add('visible');
@@ -275,22 +292,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('dark-theme'); 
     }
 });
+
 // --- СКРОЛЛ КАТЕГОРИЙ КОЛЕСИКОМ МЫШКИ ---
 const categoriesPanel = document.querySelector('.categories-panel');
 
 if (categoriesPanel) {
     categoriesPanel.addEventListener('wheel', (event) => {
         if (event.target.closest('.categories-panel')) {
-            event.preventDefault(); // Останавливаем скролл страницы
+            event.preventDefault();
             
             const scrollAmount = event.deltaY;
             const currentScroll = categoriesPanel.scrollLeft;
             const maxScroll = categoriesPanel.scrollWidth - categoriesPanel.clientWidth;
 
-            // Вычисляем новую позицию
             let newScroll = currentScroll + scrollAmount;
 
-            // Логика "доскроллить до конца": если мы почти уперлись, едем точно в конец
             if (newScroll >= maxScroll - 10) { 
                 newScroll = maxScroll;
             } else if (newScroll <= 10) {

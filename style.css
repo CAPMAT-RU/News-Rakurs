@@ -713,3 +713,16 @@ header {
         font-size: 14px;
     }
 }
+.news-meta {
+    display: flex;
+    justify-content: space-between; /* Это и разбрасывает их по краям */
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.meta-author {
+    font-style: italic;
+    color: #555;
+}
