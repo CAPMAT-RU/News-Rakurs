@@ -129,60 +129,52 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         newsArray.forEach(newsItem => {
-            // 1. Форматируем дату
+            // --- ТВОЯ СТАРАЯ ЛОГИКА (ОСТАВЛЯЕМ КАК ЕСТЬ) ---
             const formattedDate = newsItem.date ? formatDate(newsItem.date) : '';
-            // 2. Получаем автора
             const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
-
-            // 3. Логика категорий и цветов
+        
             let rawCategory = newsItem.category || '';
             let displayText = rawCategory; 
             
             if (!rawCategory || rawCategory.trim() === '') {
                 displayText = 'Разное';
             }
-
+        
             const key = rawCategory.toLowerCase().trim();
             const colorClass = categoryMap[key] || 'other';
             const finalClass = `category-${colorClass}`;
-
-            // 4. Обработка картинки
-            const imgSrc = newsItem.image ? newsItem.image : 'https://via.placeholder.com/400x250?text=Нет+фото';
-
-            // Создаем элемент карточки
-            const newsElement = document.createElement('div');
-            newsElement.classList.add('news-card');
+            // -----------------------------------------------
+        
+            // --- НОВЫЙ HTML ШАБЛОН (ВСТАВЛЯЕМ ВМЕСТО СТАРОГО) ---
             
-            if (rawCategory) {
-                newsElement.setAttribute('data-category', rawCategory);
-            }
-
-            // --- ВОТ ЗДЕСЬ БЫЛО ИЗМЕНЕНИЕ ---
-            // Теперь здесь тоже есть .news-meta, чтобы разнести дату и автора
-            newsElement.innerHTML = `
-                <span class="news-category-badge ${finalClass}">${displayText}</span>
-                
-                <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
-                
-                <div class="news-content">
-                    <h3 class="news-title">${newsItem.title}</h3>
-                    
-                    ${formattedDate || authorText ? `
-                        <div class="news-meta">
-                            ${formattedDate ? `<span class="meta-date">${formattedDate}</span>` : ''}
-                            ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
-                        </div>
-                    ` : ''}
-                    
-                    <p class="news-description">${newsItem.description}</p>
-                    <a href="#" class="read-more" data-id="${newsItem.id}">Читать далее</a>
+            // Формируем бейдж категории (используем твой finalClass)
+            const categoryBadge = displayText 
+                ? `<span class="news-category-badge ${finalClass}">${displayText}</span>` 
+                : '';
+        
+            // Формируем блок мета-данных (дата и автор)
+            const metaHtml = (formattedDate || authorText) 
+                ? `<div class="news-meta">
+                      ${formattedDate ? `<span class="meta-date">${formattedDate}</span>` : ''}
+                      ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
+                   </div>` 
+                : '';
+        
+            // Рисуем карточку с новыми классами
+            newsContainer.innerHTML += `
+                <div class="news-item">
+                    <img src="${newsItem.image}" alt="${newsItem.title}" class="news-image">
+                    <div class="news-content">
+                        ${categoryBadge}
+                        <h3 class="news-title">${newsItem.title}</h3>
+                        ${metaHtml}
+                        <p class="news-description">${newsItem.description}</p>
+                        <a href="#" class="read-more">Читать далее</a>
+                    </div>
                 </div>
             `;
-            // -------------------------------
-            
-            newsContainer.appendChild(newsElement);
         });
-    }
+        
 
     // --- ФИЛЬТРАЦИЯ И ПОИСК ---
     if (categoryButtons.length > 0) {
@@ -319,4 +311,65 @@ if (categoriesPanel) {
             });
         }
     });
+}
+
+/* --- СЕТКА ДЛЯ ЛЕНТЫ НОВОСТЕЙ --- */
+.news-grid {
+    display: grid;
+    /* Автоматическая сетка: колонки минимум 300px, максимум - делят место поровну */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px; /* Расстояние между карточками */
+    padding: 20px 0;
+}
+
+/* Сама карточка новости */
+.news-item {
+    background: var(--bg-secondary, #fff);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Картинка внутри карточки */
+.news-image {
+    width: 100%;
+    height: 220px; /* Стандартная высота (для узких карточек) */
+    object-fit: cover; /* Чтобы картинка не сплющивалась */
+    display: block;
+}
+
+/* --- ЧЕРЕДОВАНИЕ: 2-я КАРТОЧКА ШИРОКАЯ --- */
+/* Если у тебя есть возможность добавить класс wide ко второй карточке через JS - используй .news-item.wide */
+/* Но если нет, используем nth-child для автоматического чередования */
+
+.news-item:nth-child(2n) {
+    grid-column: span 2; /* Занимает 2 колонки */
+}
+
+/* Для широких карточек увеличиваем высоту картинки */
+.news-item:nth-child(2n) .news-image {
+    height: 300px;
+}
+
+/* Адаптив: на мобильных всегда 1 колонка */
+@media (max-width: 768px) {
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .news-item:nth-child(2n) {
+        grid-column: 1; /* На мобильном отменяем "широкость" */
+    }
+    
+    .news-item:nth-child(2n) .news-image {
+        height: 220px; /* Возвращаем стандартную высоту */
+    }
 }
