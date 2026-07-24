@@ -1,228 +1,50 @@
-console.log('Скрипт запустился');
-
 document.addEventListener('DOMContentLoaded', () => {
-    const newsContainer = document.getElementById('news-container');
-    const loader = document.getElementById('loader');
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    const searchInput = document.getElementById('searchInput');
-    const featuredNewsContainer = document.getElementById('main-news');
-    const progressBar = document.getElementById('progress-bar');
-    const scrollToTopButton = document.getElementById('scrollToTop');
+    // ... (ваш существующий код)
 
-    let allNewsData = [];
-    let currentCategory = 'all';
+    const categoriesContainer = document.querySelector('.categories-container'); // Контейнер для кнопок категорий
+    const categoriesInner = document.querySelector('.categories'); // Внутренний контейнер, который будет прокручиваться
 
-    // --- 1. ЗАГРУЗКА НОВОСТЕЙ ---
-    fetch('news.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Ошибка HTTP: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            allNewsData = data.items || []; 
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
 
-            // Показываем главную новость
-            if (data.featuredNewsId && allNewsData.length > 0) {
-                const featuredNews = allNewsData.find(item => item.id === data.featuredNewsId);
-                if (featuredNews) {
-                    displayFeaturedNews(featuredNews);
-                }
-            }
-
-            // Показываем список новостей
-            displayNews(allNewsData);
-
-            // Скрываем лоадер
-            if (loader) {
-                loader.style.display = 'none'; 
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка загрузки новостей:', error);
-            if (loader) {
-                loader.textContent = 'Не удалось загрузить новости. Проверьте консоль.';
-                loader.style.display = 'block'; 
-            }
+    // Проверяем, существуют ли элементы, прежде чем добавлять слушателей
+    if (categoriesContainer && categoriesInner) {
+        // Событие при нажатии мыши на внешний контейнер
+        categoriesContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            categoriesContainer.classList.add('active'); // Для визуальной обратной связи (если нужно)
+            startX = e.pageX - categoriesContainer.offsetLeft;
+            scrollLeft = categoriesInner.scrollLeft;
         });
 
-    // --- ФУНКЦИИ ОТРИСОВКИ ---
-    function displayFeaturedNews(newsItem) {
-        if (featuredNewsContainer) {
-            featuredNewsContainer.style.display = 'block';
-            featuredNewsContainer.innerHTML = `
-                <div class="featured-news-card">
-                    <img src="${newsItem.image}" alt="${newsItem.title}" class="featured-news-image">
-                    <div class="featured-news-content">
-                        <h2 class="featured-news-title">${newsItem.title}</h2>
-                        <p class="featured-news-date">${newsItem.date}</p>
-                        <p class="featured-news-description">${newsItem.description}</p>
-                        <a href="#" class="read-more-featured" data-id="${newsItem.id}">Читать полностью</a>
-                    </div>
-                </div>
-            `;
-            const readMoreFeatured = featuredNewsContainer.querySelector('.read-more-featured');
-            if (readMoreFeatured) {
-                readMoreFeatured.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    handleReadMoreClick(e.target.getAttribute('data-id'));
-                });
-            }
-        }
-    }
+        // Событие при выходе мыши из внешнего контейнера
+        categoriesContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+            categoriesContainer.classList.remove('active');
+        });
 
-    function displayNews(newsArray) {
-        if (!newsContainer) return;
+        // Событие при отпускании мыши
+        categoriesContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+            categoriesContainer.classList.remove('active');
+        });
 
-        newsContainer.innerHTML = ''; 
-        if (!newsArray || newsArray.length === 0) {
-            newsContainer.innerHTML = '<p>Новостей не найдено.</p>';
-            return;
-        }
+        // Событие при движении мыши (только если isDragging = true)
+        categoriesContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault(); // Предотвращаем выделение текста
+            const x = e.pageX - categoriesContainer.offsetLeft;
+            const walk = (x - startX) * 1.5; // *1.5 - скорость прокрутки (можно настроить)
+            categoriesInner.scrollLeft = scrollLeft - walk;
+        });
 
-        newsArray.forEach(newsItem => {
-            let formattedDate = '';
-            if (newsItem.date) {
-                try {
-                    formattedDate = new Date(newsItem.date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
-                } catch (e) {
-                    formattedDate = newsItem.date; 
-                }
-            }
-
-            // --- ЛОГИКА КАТЕГОРИИ (Новое) ---
-            // Получаем категорию. Если её нет, ставим 'other'
-            const category = newsItem.category ? newsItem.category.toLowerCase() : 'other';
-            
-            // Формируем класс для цвета (category-sport, category-tech и т.д.)
-            const categoryClass = `category-${category}`;
-            
-            // Текст для отображения (можно оставить как есть, или сделать маппинг: sport -> "Спорт")
-            const categoryText = newsItem.category || 'Разное';
-            // ---------------------------------
-            
-            const newsElement = document.createElement('div');
-            newsElement.classList.add('news-item');
-            
-            newsElement.innerHTML = `
-                <div class="news-card">
-                    <!-- Плашка категории -->
-                    <span class="news-category-badge ${categoryClass}">${categoryText}</span>
-                    
-                    <img src="${newsItem.image}" alt="${newsItem.title}" class="news-image">
-                    <div class="news-content">
-                        <h3 class="news-title">${newsItem.title}</h3>
-                        <p class="news-date">${formattedDate}</p>
-                        <p class="news-description">${newsItem.description}</p>
-                        <a href="#" class="read-more" data-id="${newsItem.id}">Читать далее</a>
-                    </div>
-                </div>
-            `;
-            newsContainer.appendChild(newsElement);
+        // Событие при прокрутке колесиком мыши
+        categoriesContainer.addEventListener('wheel', (e) => {
+            e.preventDefault(); // Отключаем стандартную прокрутку страницы
+            categoriesInner.scrollLeft += e.deltaY; // Прокрутка в зависимости от направления колесика
         });
     }
 
-    // --- ФИЛЬТРАЦИЯ И ПОИСК ---
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            currentCategory = button.getAttribute('data-category');
-            filterNews();
-        });
-    });
-
-    function filterNews() {
-        const filtered = currentCategory === 'all' 
-            ? allNewsData 
-            : allNewsData.filter(item => item.category === currentCategory);
-        displayNews(filtered);
-    }
-
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase().trim();
-        if (query.length > 1) {
-            const filtered = allNewsData.filter(item =>
-                item.title.toLowerCase().includes(query) ||
-                item.description.toLowerCase().includes(query)
-            );
-            displayNews(filtered);
-        } else if (query.length === 0) {
-            filterNews(); 
-        }
-    });
-
-    // --- ОБРАБОТКА КЛИКА НА "ЧИТАТЬ ДАЛЕЕ" ---
-    function handleReadMoreClick(newsId) {
-        const item = allNewsData.find(i => i.id === newsId);
-        if (item) {
-            window.location.href = `${newsId}.html`;
-        }
-    }
-
-    if (newsContainer) { 
-        newsContainer.addEventListener('click', (event) => {
-            if (event.target.classList.contains('read-more')) {
-                event.preventDefault(); 
-                handleReadMoreClick(event.target.getAttribute('data-id'));
-            }
-        });
-    }
-
-    // --- ПРОКРУТКА И ПРОГРЕСС-БАР (ИСПРАВЛЕНО) ---
-    
-    // 1. Логика прогресс-бара (оставлена как была)
-    window.addEventListener('scroll', () => {
-        progressBarScroll();
-    });
-
-    function progressBarScroll() {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        if (height > 0 && progressBar) {
-            progressBar.style.width = ((winScroll / height) * 100) + '%';
-        }
-    }
-
-    // 2. Логика кнопки "Наверх" (ПОЛНОСТЬЮ ПЕРЕПИСАНА)
-    if (scrollToTopButton) {
-        // Показываем/скрываем кнопку при скролле
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollToTopButton.classList.add('visible');
-            } else {
-                scrollToTopButton.classList.remove('visible');
-            }
-        });
-
-        // Плавная прокрутка при клике
-        scrollToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // Плавная анимация
-            });
-        });
-    }
-
-    // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
-    const themeToggleBtn = document.querySelector('.theme-toggle');
-    
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            
-            if (document.body.classList.contains('dark-theme')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
-        });
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme'); 
-    }
+    // ... (остальной ваш код)
 });
