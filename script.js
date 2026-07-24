@@ -9,70 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const scrollToTopButton = document.getElementById('scrollToTop');
 
-    // ✅ Массив новостей (статический, без fetch)
+    // --- НАСТРОЙКА НОВОСТЕЙ (Только ссылки, без контента) ---
+    // Здесь мы просто перечисляем, какой файл открывать для каждой новости.
+    // Контент (заголовки, картинки) уже лежит ВНУТРИ файлов news-1.html, news-2.html и т.д.
     const allNewsData = [
-        { 
-            id: 1, 
-            title: 'Топливный Шок: Все Пойдет по Набиуллиной', 
-            category: 'Экономика', 
-            image: 'images/5411529171307010672_120.jpg', 
-            link: 'news-1.html',
-            description: 'Ну что, дорогие мои, держитесь! Наша любимая Эльвира Сахипзадовна...'
-        },
-        { 
-            id: 2, 
-            title: 'Скандал в правительстве: кто виноват?', 
-            category: 'Политика', 
-            image: 'images/news2.jpg', 
-            link: 'news-2.html',
-            description: 'Крупный скандал разгорелся вокруг министерства...'
-        },
-        { 
-            id: 3, 
-            title: 'Новый прорыв в науке', 
-            category: 'Наука', 
-            image: 'images/news3.jpg',
-            link: 'news-3.html',
-            description: 'Ученые совершили открытие, которое изменит мир...'
-        }
-        // Сюда добавляй остальные новости
+        { id: 1, title: 'Топливный Шок: Все Пойдет по Набиуллиной', category: 'Экономика', link: 'news-1.html', image: 'images/5411529171307010672_120.jpg', description: 'Краткое описание для карточки' },
+        { id: 2, title: 'Скандал в правительстве: кто виноват?', category: 'Политика', link: 'news-2.html', image: 'images/news2.jpg', description: 'Краткое описание для карточки' },
+        { id: 3, title: 'Новый прорыв в науке', category: 'Наука', link: 'news-3.html', image: 'images/news3.jpg', description: 'Краткое описание для карточки' }
+        // Сюда добавляй только ID, Title, Category, Link и Image для превью.
+        // Весь текст статьи остается в news-X.html
     ];
 
     let currentCategory = 'all';
-
-    function formatDate(dateString) {
-        try {
-            return new Date(dateString).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
-        } catch (e) {
-            return dateString;
-        }
-    }
-
-    function displayFeaturedNews(newsItem) {
-        if (!featuredNewsContainer) return;
-
-        const imgSrc = newsItem.image || 'https://via.placeholder.com/600x400?text=Нет+фото';
-        const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
-        const dateText = newsItem.date ? formatDate(newsItem.date) : '';
-
-        featuredNewsContainer.innerHTML = `
-            <div class="featured-news-card">
-                <img src="${imgSrc}" alt="${newsItem.title}" class="featured-news-image">
-                <div class="featured-news-content">
-                    <h2 class="featured-news-title">${newsItem.title}</h2>
-                    ${dateText || authorText ? `
-                        <div class="news-meta featured-meta">
-                            ${dateText ? `<span class="meta-date">${dateText}</span>` : ''}
-                            ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
-                        </div>
-                    ` : ''}
-                    <p class="featured-news-description">${newsItem.description || ''}</p>
-                    <!-- Ссылка ведет сразу на файл -->
-                    <a href="${newsItem.link}" class="read-more-featured">Читать полностью</a>
-                </div>
-            </div>
-        `;
-    }
 
     function normalizeCategory(cat) {
         if (!cat) return 'other';
@@ -97,6 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'other';
     }
 
+    function displayFeaturedNews(newsItem) {
+        if (!featuredNewsContainer) return;
+        const imgSrc = newsItem.image || 'https://via.placeholder.com/600x400?text=Нет+фото';
+        featuredNewsContainer.innerHTML = `
+            <div class="featured-news-card">
+                <img src="${imgSrc}" alt="${newsItem.title}" class="featured-news-image">
+                <div class="featured-news-content">
+                    <h2 class="featured-news-title">${newsItem.title}</h2>
+                    <p class="featured-news-description">${newsItem.description || ''}</p>
+                    <a href="${newsItem.link}" class="read-more-featured">Читать полностью</a>
+                </div>
+            </div>
+        `;
+    }
+
     function displayNews(newsArray) {
         if (!newsContainer) return;
         newsContainer.innerHTML = '';
@@ -112,27 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const finalClass = `category-${key}`;
             const categoryBadge = `<span class="news-category-badge ${finalClass}">${displayText}</span>`;
 
-            const formattedDate = newsItem.date ? formatDate(newsItem.date) : '';
-            const authorText = newsItem.author ? `Автор: ${newsItem.author}` : '';
-            
-            const metaHtml = (formattedDate || authorText) 
-                ? `<div class="news-meta">
-                      ${formattedDate ? `<span class="meta-date">${formattedDate}</span>` : ''}
-                      ${authorText ? `<span class="meta-author">${authorText}</span>` : ''}
-                   </div>` 
-                : '';
-
             const imgSrc = newsItem.image || 'https://via.placeholder.com/300x220?text=Нет+фото';
 
-            // ВАЖНО: ссылка теперь берется из поля link (news-X.html)
             newsContainer.innerHTML += `
                 <div class="news-item">
                     <img src="${imgSrc}" alt="${newsItem.title}" class="news-image">
                     <div class="news-content">
                         ${categoryBadge}
                         <h3 class="news-title">${newsItem.title}</h3>
-                        ${metaHtml}
                         <p class="news-description">${newsItem.description || ''}</p>
+                        <!-- Ссылка ведет прямо на твой готовый файл news-X.html -->
                         <a href="${newsItem.link}" class="read-more">Читать далее</a>
                     </div>
                 </div>
@@ -140,16 +92,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Инициализация ---
-    
-    // Если есть featuredNewsId в данных (опционально), можно показать главную новость
-    // Сейчас просто показываем все новости
+    // Инициализация
     displayNews(allNewsData);
-
     if (loader) loader.style.display = 'none';
 
-    // --- ФИЛЬТРАЦИЯ ---
+    if (featuredNewsContainer && allNewsData.length > 0) {
+        displayFeaturedNews(allNewsData[0]);
+    }
 
+    // Фильтры
     if (categoryButtons.length > 0) {
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -164,16 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function filterNews() {
         const filtered = currentCategory === 'all' 
             ? allNewsData 
-            : allNewsData.filter(item => {
-                const itemCat = normalizeCategory(item.category);
-                const filterCat = normalizeCategory(currentCategory);
-                return itemCat === filterCat;
-            });
+            : allNewsData.filter(item => normalizeCategory(item.category) === normalizeCategory(currentCategory));
         displayNews(filtered);
     }
 
-    // --- ПОИСК ---
-
+    // Поиск
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.toLowerCase().trim();
@@ -189,31 +135,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ПРОГРЕСС-БАР И КНОПКА "НАВЕРХ" ---
-
+    // Скролл бар и кнопка вверх
     window.addEventListener('scroll', () => {
         if (progressBar) {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            if (height > 0) {
-                progressBar.style.width = ((winScroll / height) * 100) + '%';
-            }
+            if (height > 0) progressBar.style.width = ((winScroll / height) * 100) + '%';
         }
-
-        if (scrollToTopButton) {
-            scrollToTopButton.classList.toggle('hidden', window.scrollY <= 300);
-        }
+        if (scrollToTopButton) scrollToTopButton.classList.toggle('hidden', window.scrollY <= 300);
     });
 
     if (scrollToTopButton) {
-        scrollToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 
-    // --- ТЕМА (СВЕТЛАЯ/ТЕМНАЯ) ---
+    // Тема
     const themeToggleBtn = document.querySelector('.theme-toggle');
-    
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
@@ -222,9 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme');
-    }
+    if (savedTheme === 'dark') document.body.classList.add('dark-theme');
+    else document.body.classList.remove('dark-theme');
 });
