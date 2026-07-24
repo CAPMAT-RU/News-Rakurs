@@ -713,16 +713,24 @@ header {
         font-size: 14px;
     }
 }
+
 .news-meta {
-    display: flex;
-    justify-content: space-between; /* Это и разбрасывает их по краям */
-    align-items: center;
+    display: block;
     margin-bottom: 10px;
     font-size: 0.9rem;
-    color: #666;
 }
 
+/* АКЦЕНТНАЯ ДАТА: жирный оранжевый */
+.meta-date {
+    color: #ff8b00;       /* Оранжевый */
+    font-weight: 700;     /* Жирный */
+    margin-bottom: 6px;   /* Чуть больше отступ снизу */
+}
+
+/* АКЦЕНТНЫЙ АВТОР: насыщенный тёмно‑оранжевый / рыже‑коричневый */
 .meta-author {
-    font-style: italic;
-    color: #555;
+    color: #ff8b00;      /* Оранжевый */
+    font-style: italic;   /* Курсив */
+    font-weight: 600;     /* Полужирный */
+    margin-bottom: 0;
 }
