@@ -4,201 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 👇 ТЕГИ ДЛЯ ПРЕВЬЮ (ВСТАВЛЕНЫ И ИСПРАВЛЕНЫ) 👇 -->
+    <!-- OG Meta -->
     <meta property="og:title" content="Дроны с розочкой: украинская изобретательность">
     <meta property="og:description" content="ВСУ превращают бензопилы в смертоносное оружие, навешивая фрагменты цепей на дроны. Российские саперы расскажут, как это работает и чего стоит опасаться.">
-    <!-- Путь к картинке теперь правильный: одна папка images -->
-    <meta property="og:image" content="https://github.com/rakurs-news/rakurs-news.github.io/images/1899546918_0_160_3072_1888_768x0_80_0_0_f1355f94074718f56c696c92d616979f.jpg.webp">
-    <!-- Ссылка на саму страницу статьи (без .html, со слэшем) -->
+    <!-- Исправленный URL: прямой адрес GitHub Pages (не raw GitHub) -->
+    <meta property="og:image" content="https://rakurs-news.github.io/images/1899546918_0_160_3072_1888_768x0_80_0_0_f1355f94074718f56c696c92d616979f.jpg.webp">
     <meta property="og:url" content="https://rakurs-news.github.io/news-17/">
     <meta property="og:type" content="article">
     <meta property="og:locale" content="ru_RU">
 
-   <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Дроны с розочкой: украинская изобретательность">
-<meta name="twitter:description" content="ВСУ превращают бензопилы в смертоносное оружие, навешивая фрагменты цепей на дроны. Российские саперы расскажут, как это работает и чего стоит опасаться.">
-<meta name="twitter:image" content="https://rakurs-news.github.io/images/1899546918_0_160_3072_1888_768x0_80_0_0_f1355f94074718f56c696c92d616979f.jpg.webp">
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Дроны с розочкой: украинская изобретательность">
+    <meta name="twitter:description" content="ВСУ превращают бензопилы в смертоносное оружие, навешивая фрагменты цепей на дроны. Российские саперы расскажут, как это работает и чего стоит опасаться.">
+    <!-- Исправленный URL для Twitter -->
+    <meta name="twitter:image" content="https://rakurs-news.github.io/images/1899546918_0_160_3072_1888_768x0_80_0_0_f1355f94074718f56c696c92d616979f.jpg.webp">
 
     <title>Дроны с розочкой: украинская изобретательность | Ракурс NEWS</title>
 
     <style>
-    :root {
-        --bg: #ffffff;
-        --card: #f9f9f9;
-        --text: #1a1a1a;
-        --accent: #ff9800;
-        --meta: #666;
-        --quote-bg: rgba(255, 152, 0, 0.05);
-        --hr-color: #eee;
-    }
+        :root {
+            --bg: #ffffff;
+            --card: #f9f9f9;
+            --text: #1a1a1a;
+            --accent: #ff9800;
+            --meta: #666;
+            --quote-bg: rgba(255, 152, 0, 0.05);
+            --hr-color: #eee;
+        }
 
-    [data-theme="dark"] {
-        --bg: #121212;
-        --card: #1e1e1e;
-        --text: #e0e0e0;
-        --accent: #ff9800;
-        --meta: #aaa;
-        --quote-bg: rgba(255, 152, 0, 0.1);
-        --hr-color: #333;
-    }
+        [data-theme="dark"] {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #e0e0e0;
+            --accent: #ff9800;
+            --meta: #aaa;
+            --quote-bg: rgba(255, 152, 0, 0.1);
+            --hr-color: #333;
+        }
 
-    body {
-        background: var(--bg);
-        color: var(--text);
-        font-family: sans-serif;
-        margin: 0;
-        padding: 20px;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.6;
-        transition: background 0.3s, color 0.3s;
-    }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
 
-    header {
-        padding: 15px 0;
-        border-bottom: 1px solid var(--accent);
-        margin-bottom: 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        header {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--accent);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .logo-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: bold;
-        font-size: 20px;
-        cursor: pointer;
-    }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+        }
 
-    .logo-wrapper img {
-        width: 30px;
-        height: 30px;
-    }
+        .logo-wrapper img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            margin: 0;
+        }
 
-    .theme-toggle {
-        cursor: pointer;
-        background: transparent;
-        border: 1px solid var(--accent);
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 2px;
-        transition: all 0.3s;
-        height: 32px;
-        width: 32px;
-        padding: 0;
-    }
+        .theme-toggle {
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            transition: all 0.3s;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+        }
 
-    .theme-toggle:hover {
-        background: var(--accent);
-        color: #000;
-    }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: #000;
+        }
 
-    h1 {
-        margin: 0 0 20px;
-        line-height: 1.2;
-        font-size: 24px;
-    }
+        h1 {
+            margin: 0 0 20px;
+            line-height: 1.2;
+            font-size: 24px;
+        }
 
-    img {
-        width: 100%;
-        height: auto;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        background: #333;
-        display: block;
-    }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background: #333;
+            display: block;
+        }
 
-    p {
-        margin-bottom: 20px;
-    }
+        p {
+            margin-bottom: 20px;
+        }
 
-    article p:first-of-type {
-        font-size: 1.1rem;
-        font-weight: 500;
-        border-left: 3px solid var(--accent);
-        padding-left: 12px;
-        margin-top: 0;
-    }
+        article p:first-of-type {
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            margin-top: 0;
+        }
 
-    blockquote {
-        margin: 25px 0;
-        padding: 16px 20px;
-        background: var(--quote-bg);
-        border-left: 4px solid var(--accent);
-        font-style: italic;
-        color: var(--meta);
-        position: relative;
-    }
+        blockquote {
+            margin: 25px 0;
+            padding: 16px 20px;
+            background: var(--quote-bg);
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            color: var(--meta);
+            position: relative;
+        }
 
-    blockquote::before {
-        content: "“";
-        font-size: 36px;
-        opacity: 0.2;
-        position: absolute;
-        top: 10px;
-        left: 8px;
-    }
+        blockquote::before {
+            content: "“";
+            font-size: 36px;
+            opacity: 0.2;
+            position: absolute;
+            top: 10px;
+            left: 8px;
+        }
 
-    hr {
-        border: 0;
-        height: 1px;
-        background: var(--hr-color);
-        margin: 30px 0;
-    }
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--hr-color);
+            margin: 30px 0;
+        }
 
-    ul, ol {
-        margin-bottom: 20px;
-        padding-left: 20px;
-    }
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
 
-    li {
-        margin-bottom: 8px;
-    }
+        li {
+            margin-bottom: 8px;
+        }
 
-    .controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding-top: 15px;
-        border-top: 1px solid var(--hr-color);
-    }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--hr-color);
+        }
 
-    .btn {
-        text-decoration: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 4px;
-        font-weight: bold;
-        border: 1px solid var(--accent);
-        color: var(--text);
-        background: var(--card);
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 32px;
-        box-sizing: border-box;
-    }
+        .btn {
+            text-decoration: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            border: 1px solid var(--accent);
+            color: var(--text);
+            background: var(--card);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            box-sizing: border-box;
+        }
 
-    .btn:hover {
-        background: var(--accent);
-        color: #fff;
-    }
-
-    .logo-wrapper img {
-        width: 30px !important; 
-        height: 30px !important;
-        display: block;
-        margin: 0;
-    }
+        .btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -222,19 +218,18 @@
         </button>
     </header>
     
-    <h1>Конец духа Анкориджа</h1>
+    <h1>Дроны с розочкой: украинская изобретательность?</h1>
     
     <img src="/images/1899546918_0_160_3072_1888_768x0_80_0_0_f1355f94074718f56c696c92d616979f.jpg.webp" alt="Конец духа Анкориджа">
     
     <article>
-        	  <p>"Ну, вы слышали? Укрошваль, кажется, решили, что стандартные боеприпасы для дронов — это скучно. Зачем, спрашивается, тратиться на всякие там кумулятивные или осколочные, когда под рукой есть… циркулярные пилы!</p>
-			  <p>По словам одного очень остроумного парня с позывным Турист из Московского военного округа, эти мрази теперь прикручивают к своим беспилотникам куски цепей от бензопил. Видимо, чтобы уж наверняка затрехсотить нашего бойца.</p>
-			  <p>Понятно, зачем: чтобы раненый боец уже точно никуда не делся и не смог дальше свою службу нести. И вроде бы мелочь, шпильки какие-то. Но Турист, как человек, чья работа — разбираться в таких подарках, предупреждает: штука эта может быть весьма неприятной. Когда такой дронопила падает или, не дай бог, взрывается где-то рядом, эти самые цепи разлетаются во все стороны. И тогда уже приходится не просто сбивать беспилотник, а еще и уворачиваться от летающих зубов. Так что, как говорит наш осведомленный сапер, наши ребята теперь продумывают каждый шаг, чтобы самим под такие сюрпризы не попасть. Такая вот высокая технология, прости Господи.",
-
+        <p>"Ну, вы слышали? Укрошваль, кажется, решили, что стандартные боеприпасы для дронов — это скучно. Зачем, спрашивается, тратиться на всякие там кумулятивные или осколочные, когда под рукой есть… циркулярные пилы!</p>
+        <p>По словам одного очень остроумного парня с позывным Турист из Московского военного округа, эти мрази теперь прикручивают к своим беспилотникам куски цепей от бензопил. Видимо, чтобы уж наверняка затрехсотить нашего бойца.</p>
+        <p>Понятно, зачем: чтобы раненый боец уже точно никуда не делся и не смог дальше свою службу нести. И вроде бы мелочь, шпильки какие-то. Но Турист, как человек, чья работа — разбираться в таких подарках, предупреждает: штука эта может быть весьма неприятной. Когда такой дронопила падает или, не дай бог, взрывается где-то рядом, эти самые цепи разлетаются во все стороны. И тогда уже приходится не просто сбивать беспилотник, а еще и уворачиваться от летающих зубов. Так что, как говорит наш осведомленный сапер, наши ребята теперь продумывают каждый шаг, чтобы самим под такие сюрпризы не попасть. Такая вот высокая технология, прости Господи."</p>
     </article>
     
     <div class="controls">
-        <a href="index.html" class="btn" style="height: 32px;">На главную</a>
+        <a href="index.html" class="btn">На главную</a>
         <button class="btn" id="shareButton">Поделиться</button>
     </div>
 
