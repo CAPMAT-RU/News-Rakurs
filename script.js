@@ -275,3 +275,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('dark-theme'); 
     }
 });
+// --- СКРОЛЛ КАТЕГОРИЙ КОЛЕСИКОМ МЫШКИ ---
+const categoriesPanel = document.querySelector('.categories-panel');
+
+if (categoriesPanel) {
+    categoriesPanel.addEventListener('wheel', (event) => {
+        // Если навели мышку на панель категорий
+        if (event.target.closest('.categories-panel')) {
+            
+            // Предотвращаем стандартный скролл страницы (чтобы страница не двигалась)
+            event.preventDefault(); 
+            
+            // Двигаем панель категорий горизонтально
+            categoriesPanel.scrollBy({
+                left: event.deltaY, // Используем deltaY для горизонтального движения
+                behavior: 'smooth'
+            });
+        }
+    });
+}
