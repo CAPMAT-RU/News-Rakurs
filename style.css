@@ -483,18 +483,18 @@ body.dark-theme .categories-panel {
 /* 2. Сама плашка: абсолютное позиционирование, четкие отступы, белый текст */
 .news-category-badge {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 6px 10px;
-    border-radius: 6px;
+    top: 6px;       /* Чуть ниже верхнего края фото */
+    right: 6px;     /* Чуть левее правого края фото */
+    padding: 5px 9px; /* Компактный размер */
+    border-radius: 4px; /* Углы чуть острее картинки */
     font-size: 11px;
     font-weight: 700;
-    color: #ffffff; /* Белый текст */
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Легкая тень */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Тень чуть меньше, чтобы не выглядела громоздко */
     z-index: 10;
-    /* Нет прозрачности, сплошной цвет берется из следующего блока */
+    white-space: nowrap; /* Текст не будет переноситься */
 }
 
 /* 3. Цвета категорий (Сплошные, без прозрачности) */
